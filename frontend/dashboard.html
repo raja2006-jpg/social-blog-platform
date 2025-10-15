@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Social Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">SocialBlog</div>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </nav>
+
+    <!-- New Post Form -->
+    <section class="new-post">
+        <form id="postForm">
+            <textarea name="content" placeholder="What's on your mind?" required></textarea>
+            <input type="text" name="image" placeholder="Image URL (optional)" />
+            <button type="submit">Post</button>
+        </form>
+    </section>
+
+    <!-- Posts Feed -->
+    <section class="feed" id="feedContainer">
+        <!-- Posts will be dynamically added here by dashboard.js -->
+    </section>
+
+    <script src="js/posts.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Logout functionality
+        const logoutBtn = document.getElementById("logoutBtn");
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>

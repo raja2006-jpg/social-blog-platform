@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Blog - Login / Signup</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-box">
+            <h2>Social Blog</h2>
+            <div class="button-box">
+                <button id="loginBtn" class="toggle-btn">Log In</button>
+                <button id="signupBtn" class="toggle-btn">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="input-group">
+                <input type="text" placeholder="Username or Email" class="input-field" required>
+                <input type="password" placeholder="Enter Password" class="input-field" required>
+                <button type="submit" class="submit-btn">Log In</button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="input-group" style="display: none;">
+                <input type="text" placeholder="Username" class="input-field" required>
+                <input type="email" placeholder="Email" class="input-field" required>
+                <input type="password" placeholder="Enter Password" class="input-field" required>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
