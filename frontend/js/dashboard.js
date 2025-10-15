@@ -9,6 +9,11 @@ const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 // Fetch all posts and display
 const fetchPosts = async () => {
+  if (!token) {
+    feedContainer.innerHTML = "<p>Please login to view posts.</p>";
+    return;
+  }
+
   try {
     const res = await fetch(POSTS_URL, {
       headers: { Authorization: `Bearer ${token}` },
@@ -20,7 +25,7 @@ const fetchPosts = async () => {
     renderPosts(posts);
   } catch (err) {
     console.error(err);
-    feedContainer.innerHTML = "<p>Failed to load posts. Try again.</p>";
+    feedContainer.innerHTML = "<p>Failed to load posts. Try again later.</p>";
   }
 };
 

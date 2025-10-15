@@ -3,9 +3,14 @@
 const profileForm = document.getElementById('profileForm');
 const token = localStorage.getItem('token');
 
-// ⚡ Replace with your deployed backend URL
-const API_URL = "https://social-blog-platform.onrender.com/api";
+// ⚡ Replace with your deployed backend URL for current user
+const API_URL = "https://social-blog-backend.onrender.com/api/users/me";
 
+// Redirect if not logged in
+if (!token) {
+    alert("You must be logged in to view this page.");
+    window.location.href = "index.html";
+}
 
 // Load user profile
 const loadProfile = async () => {
@@ -23,7 +28,7 @@ const loadProfile = async () => {
         }
     } catch (err) {
         console.error(err);
-        alert("Failed to load profile.");
+        alert("Failed to load profile. Please try again later.");
     }
 };
 
@@ -31,9 +36,15 @@ const loadProfile = async () => {
 if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const username = profileForm.username.value;
-        const email = profileForm.email.value;
-        const password = profileForm.password.value;
+
+        const username = profileForm.username.value.trim();
+        const email = profileForm.email.value.trim();
+        const password = profileForm.password.value.trim();
+
+        if (!username || !email) {
+            alert("Username and email cannot be empty.");
+            return;
+        }
 
         try {
             const res = await fetch(API_URL, {
@@ -55,7 +66,7 @@ if (profileForm) {
             }
         } catch (err) {
             console.error(err);
-            alert("Failed to update profile.");
+            alert("Failed to update profile. Please try again later.");
         }
     });
 }
