@@ -4,16 +4,11 @@ const feedContainer = document.getElementById("feedContainer");
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
-// ⚡ Update this URL to your deployed backend URL
+// Deployed backend URL
 const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 // Fetch all posts and display
 const fetchPosts = async () => {
-  if (!token) {
-    feedContainer.innerHTML = "<p>Please login to view posts.</p>";
-    return;
-  }
-
   try {
     const res = await fetch(POSTS_URL, {
       headers: { Authorization: `Bearer ${token}` },
@@ -25,7 +20,7 @@ const fetchPosts = async () => {
     renderPosts(posts);
   } catch (err) {
     console.error(err);
-    feedContainer.innerHTML = "<p>Failed to load posts. Try again later.</p>";
+    if (feedContainer) feedContainer.innerHTML = "<p>Failed to load posts. Try again.</p>";
   }
 };
 
@@ -43,10 +38,8 @@ const renderPosts = (posts) => {
       <small>${new Date(post.createdAt).toLocaleString()}</small>
       ${
         post.user === user.id
-          ? `
-        <button class="editBtn" data-id="${post._id}">Edit</button>
-        <button class="deleteBtn" data-id="${post._id}">Delete</button>
-      `
+          ? `<button class="editBtn" data-id="${post._id}">Edit</button>
+             <button class="deleteBtn" data-id="${post._id}">Delete</button>`
           : ""
       }
     `;
@@ -54,7 +47,6 @@ const renderPosts = (posts) => {
     feedContainer.appendChild(postDiv);
   });
 
-  // Attach delete events
   document.querySelectorAll(".deleteBtn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const postId = e.target.dataset.id;
@@ -62,7 +54,6 @@ const renderPosts = (posts) => {
     });
   });
 
-  // Attach edit events
   document.querySelectorAll(".editBtn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const postId = e.target.dataset.id;

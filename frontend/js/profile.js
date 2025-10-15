@@ -3,22 +3,13 @@
 const profileForm = document.getElementById('profileForm');
 const token = localStorage.getItem('token');
 
-// ⚡ Replace with your deployed backend URL for current user
+// Deployed backend URL
 const API_URL = "https://social-blog-backend.onrender.com/api/users/me";
 
-// Redirect if not logged in
-if (!token) {
-    alert("You must be logged in to view this page.");
-    window.location.href = "index.html";
-}
-
-// Load user profile
+// Load profile
 const loadProfile = async () => {
     try {
-        const res = await fetch(API_URL, { 
-            headers: { Authorization: `Bearer ${token}` } 
-        });
-
+        const res = await fetch(API_URL, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) throw new Error("Failed to fetch profile");
 
         const user = await res.json();
@@ -28,7 +19,7 @@ const loadProfile = async () => {
         }
     } catch (err) {
         console.error(err);
-        alert("Failed to load profile. Please try again later.");
+        alert("Failed to load profile.");
     }
 };
 
@@ -36,15 +27,9 @@ const loadProfile = async () => {
 if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const username = profileForm.username.value.trim();
-        const email = profileForm.email.value.trim();
-        const password = profileForm.password.value.trim();
-
-        if (!username || !email) {
-            alert("Username and email cannot be empty.");
-            return;
-        }
+        const username = profileForm.username.value;
+        const email = profileForm.email.value;
+        const password = profileForm.password.value;
 
         try {
             const res = await fetch(API_URL, {
@@ -57,7 +42,6 @@ if (profileForm) {
             });
 
             const data = await res.json();
-
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
                 alert('Profile updated successfully!');
@@ -66,7 +50,7 @@ if (profileForm) {
             }
         } catch (err) {
             console.error(err);
-            alert("Failed to update profile. Please try again later.");
+            alert("Failed to update profile.");
         }
     });
 }
