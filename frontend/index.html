@@ -15,17 +15,18 @@
                 <button id="signupBtn" class="toggle-btn">Sign Up</button>
             </div>
 
+            <div id="loginMessage" style="color:red; margin:5px 0;"></div>
+            <div id="registerMessage" style="color:green; margin:5px 0;"></div>
+
             <!-- Login Form -->
             <form id="loginForm" class="input-group">
-                <div id="loginMessage" class="message"></div>
-                <input type="text" name="email" placeholder="Username or Email" class="input-field" required>
+                <input type="text" name="email" placeholder="Email" class="input-field" required>
                 <input type="password" name="password" placeholder="Enter Password" class="input-field" required>
                 <button type="submit" class="submit-btn">Log In</button>
             </form>
 
             <!-- Signup Form -->
-            <form id="signupForm" class="input-group" style="display: none;">
-                <div id="registerMessage" class="message"></div>
+            <form id="registerForm" class="input-group" style="display: none;">
                 <input type="text" name="username" placeholder="Username" class="input-field" required>
                 <input type="email" name="email" placeholder="Email" class="input-field" required>
                 <input type="password" name="password" placeholder="Enter Password" class="input-field" required>
@@ -35,22 +36,21 @@
     </div>
 
     <script src="js/auth.js"></script>
-
     <script>
-        // Toggle login/signup forms
-        const loginFormEl = document.getElementById("loginForm");
-        const signupFormEl = document.getElementById("signupForm");
-        const loginBtn = document.getElementById("loginBtn");
-        const signupBtn = document.getElementById("signupBtn");
+        // Toggle forms
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
 
-        loginBtn.addEventListener("click", () => {
-            loginFormEl.style.display = "block";
-            signupFormEl.style.display = "none";
+        loginBtn.addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
         });
 
-        signupBtn.addEventListener("click", () => {
-            loginFormEl.style.display = "none";
-            signupFormEl.style.display = "block";
+        signupBtn.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
         });
     </script>
 </body>

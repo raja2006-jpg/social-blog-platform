@@ -2,17 +2,18 @@
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
+const API_URL = "https://social-blog-backend.onrender.com/api/auth"; // Deployed backend
 
-// Base API URL of your Render backend
-const API_URL = "https://social-blog-backend.onrender.com/api/auth";
+const loginMessage = document.getElementById('loginMessage');
+const registerMessage = document.getElementById('registerMessage');
 
 // ---------------- LOGIN ----------------
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = loginForm.email.value.trim();
-        const password = loginForm.password.value.trim();
+        const email = loginForm.email.value;
+        const password = loginForm.password.value;
 
         try {
             const res = await fetch(`${API_URL}/login`, {
@@ -23,22 +24,16 @@ if (loginForm) {
 
             const data = await res.json();
 
-            const loginMessage = document.getElementById('loginMessage');
             if (res.ok) {
-                // Save token & user in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-
-                // Redirect to dashboard
                 window.location.href = 'dashboard.html';
             } else {
-                // Show backend message on page
                 if (loginMessage) loginMessage.textContent = data.message || "Login failed";
             }
         } catch (err) {
             console.error(err);
-            const loginMessage = document.getElementById('loginMessage');
-            if (loginMessage) loginMessage.textContent = "Server error, try again later.";
+            if (loginMessage) loginMessage.textContent = "Server error. Try again.";
         }
     });
 }
@@ -48,9 +43,9 @@ if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const username = registerForm.username.value.trim();
-        const email = registerForm.email.value.trim();
-        const password = registerForm.password.value.trim();
+        const username = registerForm.username.value;
+        const email = registerForm.email.value;
+        const password = registerForm.password.value;
 
         try {
             const res = await fetch(`${API_URL}/register`, {
@@ -60,18 +55,16 @@ if (registerForm) {
             });
 
             const data = await res.json();
-            const registerMessage = document.getElementById('registerMessage');
 
             if (res.status === 201) {
-                if (registerMessage) registerMessage.textContent = data.message || "Registered successfully!";
+                if (registerMessage) registerMessage.textContent = data.message;
                 registerForm.reset();
             } else {
-                if (registerMessage) registerMessage.textContent = data.message || "Registration failed";
+                if (registerMessage) registerMessage.textContent = data.message;
             }
         } catch (err) {
             console.error(err);
-            const registerMessage = document.getElementById('registerMessage');
-            if (registerMessage) registerMessage.textContent = "Server error, try again later.";
+            if (registerMessage) registerMessage.textContent = "Server error. Try again.";
         }
     });
 }
