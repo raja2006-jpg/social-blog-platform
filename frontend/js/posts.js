@@ -4,6 +4,7 @@ const postForm = document.getElementById("postForm");
 const token = localStorage.getItem("token");
 
 // ⚡ Update this URL to your deployed backend URL
+const API_URL = "https://social-blog-platform.onrender.com/api";
 const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 if (postForm) {

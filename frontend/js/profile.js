@@ -4,7 +4,8 @@ const profileForm = document.getElementById('profileForm');
 const token = localStorage.getItem('token');
 
 // ⚡ Replace with your deployed backend URL
-const API_URL = "https://social-blog-backend.onrender.com/api/users/me";
+const API_URL = "https://social-blog-platform.onrender.com/api";
+
 
 // Load user profile
 const loadProfile = async () => {
