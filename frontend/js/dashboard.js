@@ -1,13 +1,21 @@
+// frontend/js/dashboard.js
+
 const feedContainer = document.getElementById("feedContainer");
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
+// ⚡ Update this URL to your deployed backend URL
+const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
+
 // Fetch all posts and display
 const fetchPosts = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/posts", {
+    const res = await fetch(POSTS_URL, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    if (!res.ok) throw new Error("Failed to fetch posts");
+
     const posts = await res.json();
     renderPosts(posts);
   } catch (err) {
@@ -28,11 +36,16 @@ const renderPosts = (posts) => {
       <p>${post.content}</p>
       ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
       <small>${new Date(post.createdAt).toLocaleString()}</small>
-      ${post.user === user.id ? `
+      ${
+        post.user === user.id
+          ? `
         <button class="editBtn" data-id="${post._id}">Edit</button>
         <button class="deleteBtn" data-id="${post._id}">Delete</button>
-      ` : ""}
+      `
+          : ""
+      }
     `;
+
     feedContainer.appendChild(postDiv);
   });
 
@@ -57,10 +70,13 @@ const renderPosts = (posts) => {
 // Delete post
 const deletePost = async (id) => {
   try {
-    await fetch(`http://localhost:5000/api/posts/${id}`, {
+    const res = await fetch(`${POSTS_URL}/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    if (!res.ok) throw new Error("Delete failed");
+
     fetchPosts();
   } catch (err) {
     console.error(err);
@@ -71,7 +87,7 @@ const deletePost = async (id) => {
 // Update post
 const updatePost = async (id, content) => {
   try {
-    await fetch(`http://localhost:5000/api/posts/${id}`, {
+    const res = await fetch(`${POSTS_URL}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -79,6 +95,9 @@ const updatePost = async (id, content) => {
       },
       body: JSON.stringify({ content }),
     });
+
+    if (!res.ok) throw new Error("Update failed");
+
     fetchPosts();
   } catch (err) {
     console.error(err);

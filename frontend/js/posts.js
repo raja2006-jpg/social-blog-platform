@@ -1,5 +1,10 @@
+// frontend/js/posts.js
+
 const postForm = document.getElementById("postForm");
 const token = localStorage.getItem("token");
+
+// ⚡ Update this URL to your deployed backend URL
+const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 if (postForm) {
   postForm.addEventListener("submit", async (e) => {
@@ -8,7 +13,7 @@ if (postForm) {
     const image = postForm.image.value;
 
     try {
-      const res = await fetch("http://localhost:5000/api/posts", {
+      const res = await fetch(POSTS_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

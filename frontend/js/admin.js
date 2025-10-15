@@ -1,6 +1,6 @@
 const token = localStorage.getItem('token');
-const API_USERS = "http://localhost:5000/api/admin/users";
-const API_POSTS = "http://localhost:5000/api/admin/posts";
+const API_URL = "https://social-blog-backend.onrender.com/api/auth";
+const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 const usersContainer = document.getElementById('usersContainer');
 const postsContainer = document.getElementById('adminPostsContainer');

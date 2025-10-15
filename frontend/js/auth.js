@@ -2,7 +2,7 @@
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL = "https://social-blog-backend.onrender.com/api/auth";
 
 // ---------------- LOGIN ----------------
 if (loginForm) {

@@ -1,10 +1,20 @@
+// frontend/js/profile.js
+
 const profileForm = document.getElementById('profileForm');
-const API_URL = "http://localhost:5000/api/users/me";
 const token = localStorage.getItem('token');
 
+// ⚡ Replace with your deployed backend URL
+const API_URL = "https://social-blog-backend.onrender.com/api/users/me";
+
+// Load user profile
 const loadProfile = async () => {
     try {
-        const res = await fetch(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(API_URL, { 
+            headers: { Authorization: `Bearer ${token}` } 
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch profile");
+
         const user = await res.json();
         if (profileForm) {
             profileForm.username.value = user.username;
@@ -12,9 +22,11 @@ const loadProfile = async () => {
         }
     } catch (err) {
         console.error(err);
+        alert("Failed to load profile.");
     }
 };
 
+// Update profile
 if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -31,15 +43,21 @@ if (profileForm) {
                 },
                 body: JSON.stringify({ username, email, password })
             });
+
             const data = await res.json();
+
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
-                alert('Profile updated!');
-            } else alert(data.message);
+                alert('Profile updated successfully!');
+            } else {
+                alert(data.message || "Failed to update profile.");
+            }
         } catch (err) {
             console.error(err);
+            alert("Failed to update profile.");
         }
     });
 }
 
+// Initial load
 loadProfile();
