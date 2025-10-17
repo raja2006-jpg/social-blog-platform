@@ -23,42 +23,20 @@
 
       <!-- Login Form -->
       <form id="loginForm" class="input-group">
-        <input type="text" name="email" id="loginUsername" placeholder="Username or Email" class="input-field" required autocomplete="off" />
-        <input type="password" name="password" id="loginPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
+        <input type="text" id="loginUsername" placeholder="Username or Email" class="input-field" required autocomplete="off" />
+        <input type="password" id="loginPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
         <button type="submit" class="submit-btn">Log In</button>
       </form>
 
       <!-- Signup Form -->
       <form id="signupForm" class="input-group hidden">
-        <input type="text" name="username" id="signupUsername" placeholder="Username" class="input-field" required autocomplete="off" />
-        <input type="email" name="email" id="signupEmail" placeholder="Email" class="input-field" required autocomplete="off" />
-        <input type="password" name="password" id="signupPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
+        <input type="text" id="signupUsername" placeholder="Username" class="input-field" required autocomplete="off" />
+        <input type="email" id="signupEmail" placeholder="Email" class="input-field" required autocomplete="off" />
+        <input type="password" id="signupPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
         <button type="submit" class="submit-btn">Sign Up</button>
       </form>
     </div>
   </div>
-
-  <!-- Toggle login/signup forms -->
-  <script>
-    const loginBtn = document.getElementById("loginBtn");
-    const signupBtn = document.getElementById("signupBtn");
-    const loginForm = document.getElementById("loginForm");
-    const signupForm = document.getElementById("signupForm");
-
-    loginBtn.addEventListener("click", () => {
-      loginForm.classList.remove("hidden");
-      signupForm.classList.add("hidden");
-      loginBtn.classList.add("active");
-      signupBtn.classList.remove("active");
-    });
-
-    signupBtn.addEventListener("click", () => {
-      signupForm.classList.remove("hidden");
-      loginForm.classList.add("hidden");
-      signupBtn.classList.add("active");
-      loginBtn.classList.remove("active");
-    });
-  </script>
 
   <!-- Auth JS -->
   <script src="js/auth.js" defer></script>
