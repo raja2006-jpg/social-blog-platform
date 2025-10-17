@@ -24,17 +24,16 @@ if (loginBtn && signupBtn && loginForm && signupForm) {
     loginBtn.classList.remove("active");
   });
 }
-
-// ---------------- LOGIN ----------------
+// LOGIN
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const emailOrUsername = document.getElementById("loginUsername").value.trim();
+    const email = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
 
-    if (!emailOrUsername || !password) {
-      alert("Please enter all fields!");
+    if (!email || !password) {
+      alert("Please enter both email and password!");
       return;
     }
 
@@ -42,7 +41,7 @@ if (loginForm) {
       const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailOrUsername, password }), // Backend expects email
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -50,16 +49,18 @@ if (loginForm) {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "dashboard.html"; // Redirect after successful login
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
       } else {
-        alert(data.message || "Login failed. Check credentials.");
+        alert(data.message || "Login failed. Check your credentials.");
       }
     } catch (err) {
       console.error(err);
-      alert("Server error. Try again.");
+      alert("Server error. Try again later.");
     }
   });
 }
+
 
 // ---------------- SIGNUP ----------------
 if (signupForm) {
