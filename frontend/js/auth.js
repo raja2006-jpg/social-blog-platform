@@ -18,14 +18,14 @@ loginForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({ identifier, password })
     });
     const data = await res.json();
-    if (res.ok && data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      // absolute path is safer on hosted sites
-      window.location.href = "/dashboard.html";
-    } else {
-      alert(data.message || "Login failed. Check your credentials.");
-    }
+ if (data.token) { 
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  window.location.href = "dashboard.html"; // redirect now
+} else {
+  alert(data.message || "Login failed. Check your credentials.");
+}
+
   } catch (err) {
     console.error("Login error:", err);
     alert("Server error. Try again later.");
