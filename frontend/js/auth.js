@@ -1,8 +1,12 @@
-// ------------------- BACKEND URL -------------------
-const BACKEND_URL = "https://social-blog-platform.onrender.com/"; // <-- Replace with your deployed backend URL
+// Backend URL
+const BACKEND_URL = "https://social-blog-platform.onrender.com";
+
+// Get forms (already declared in index.html)
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
 
 // ------------------- LOGIN -------------------
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const identifier = document.getElementById("loginUsername").value.trim();
@@ -21,12 +25,12 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-    if (data.token) {
-      // ✅ Save token & user info
+    if (data.token) { 
+      // Store token & user in localStorage
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Redirect to dashboard
+      // Redirect to dashboard
       window.location.href = "/dashboard.html";
     } else {
       alert(data.message || "Login failed. Check your credentials.");
@@ -39,7 +43,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 });
 
 // ------------------- SIGNUP -------------------
-document.getElementById("signupForm").addEventListener("submit", async (e) => {
+signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("signupUsername").value.trim();
@@ -59,13 +63,12 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-    if (res.ok || data.token) {
+    if (res.ok) {
       alert("Signup successful! You can now log in.");
-      document.getElementById("loginBtn").click(); // switch to login
+      document.getElementById("loginBtn").click(); // switch to login form
     } else {
       alert(data.message || "Signup failed. Try again.");
     }
-
   } catch (err) {
     console.error("Signup error:", err);
     alert("Server error. Try again later.");
