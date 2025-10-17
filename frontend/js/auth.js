@@ -1,12 +1,16 @@
 (() => {
+  // Grab the form elements
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
+
+  if (!loginForm || !signupForm) return; // Safety check
 
   const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
   // ------------------- LOGIN -------------------
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     const identifier = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
 
@@ -39,6 +43,7 @@
   // ------------------- SIGNUP -------------------
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     const username = document.getElementById("signupUsername").value.trim();
     const email = document.getElementById("signupEmail").value.trim();
     const password = document.getElementById("signupPassword").value.trim();
@@ -58,7 +63,7 @@
 
       if (res.ok) {
         alert("Signup successful! You can now log in.");
-        document.getElementById("loginBtn").click();
+        document.getElementById("loginBtn").click(); // Switch to login form
       } else {
         alert(data.message || "Signup failed. Try again.");
       }
