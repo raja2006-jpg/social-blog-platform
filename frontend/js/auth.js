@@ -1,25 +1,8 @@
 (() => {
-  const loginBtn = document.getElementById("loginBtn");
-  const signupBtn = document.getElementById("signupBtn");
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
 
   const BACKEND_URL = "https://social-blog-platform.onrender.com";
-
-  // Toggle login/signup forms
-  loginBtn.addEventListener("click", () => {
-    loginForm.classList.remove("hidden");
-    signupForm.classList.add("hidden");
-    loginBtn.classList.add("active");
-    signupBtn.classList.remove("active");
-  });
-
-  signupBtn.addEventListener("click", () => {
-    signupForm.classList.remove("hidden");
-    loginForm.classList.add("hidden");
-    signupBtn.classList.add("active");
-    loginBtn.classList.remove("active");
-  });
 
   // ------------------- LOGIN -------------------
   loginForm.addEventListener("submit", async (e) => {
@@ -75,7 +58,7 @@
 
       if (res.ok) {
         alert("Signup successful! You can now log in.");
-        loginBtn.click();
+        document.getElementById("loginBtn").click();
       } else {
         alert(data.message || "Signup failed. Try again.");
       }
