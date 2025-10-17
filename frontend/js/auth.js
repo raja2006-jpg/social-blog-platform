@@ -1,74 +1,87 @@
-// auth.js
-if (!window.authInitialized) {
-  window.authInitialized = true;
+(() => {
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const loginForm = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
 
-  (() => {
-    const loginForm = document.getElementById("loginForm");
-    const signupForm = document.getElementById("signupForm");
-    const BACKEND_URL = "https://social-blog-platform.onrender.com";
+  const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
-    // ------------------- LOGIN -------------------
-    loginForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const identifier = document.getElementById("loginUsername").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
+  // Toggle login/signup forms
+  loginBtn.addEventListener("click", () => {
+    loginForm.classList.remove("hidden");
+    signupForm.classList.add("hidden");
+    loginBtn.classList.add("active");
+    signupBtn.classList.remove("active");
+  });
 
-      if (!identifier || !password) {
-        return alert("Please enter both username/email and password!");
+  signupBtn.addEventListener("click", () => {
+    signupForm.classList.remove("hidden");
+    loginForm.classList.add("hidden");
+    signupBtn.classList.add("active");
+    loginBtn.classList.remove("active");
+  });
+
+  // ------------------- LOGIN -------------------
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const identifier = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!identifier || !password) {
+      return alert("Please enter both username/email and password!");
+    }
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "/dashboard.html";
+      } else {
+        alert(data.message || "Login failed. Check your credentials.");
       }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Try again later.");
+    }
+  });
 
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ identifier, password }),
-        });
+  // ------------------- SIGNUP -------------------
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
 
-        const data = await res.json();
+    if (!username || !email || !password) {
+      return alert("Please fill all fields!");
+    }
 
-        if (res.ok && data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          window.location.href = "/dashboard.html";
-        } else {
-          alert(data.message || "Login failed. Check your credentials.");
-        }
-      } catch (err) {
-        console.error("Login error:", err);
-        alert("Server error. Try again later.");
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Signup successful! You can now log in.");
+        loginBtn.click();
+      } else {
+        alert(data.message || "Signup failed. Try again.");
       }
-    });
-
-    // ------------------- SIGNUP -------------------
-    signupForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("signupUsername").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value.trim();
-
-      if (!username || !email || !password) {
-        return alert("Please fill all fields!");
-      }
-
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          alert("Signup successful! You can now log in.");
-          document.getElementById("loginBtn")?.click();
-        } else {
-          alert(data.message || "Signup failed. Try again.");
-        }
-      } catch (err) {
-        console.error("Signup error:", err);
-        alert("Server error. Try again later.");
-      }
-    });
-  })();
-}
+    } catch (err) {
+      console.error("Signup error:", err);
+      alert("Server error. Try again later.");
+    }
+  });
+})();
