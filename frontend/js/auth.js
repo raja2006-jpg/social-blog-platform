@@ -1,7 +1,7 @@
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// Replace with your Render backend URL
+// Replace with your deployed backend URL
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
 // ------------------- LOGIN -------------------
@@ -27,12 +27,9 @@ loginForm.addEventListener("submit", async (e) => {
         const data = await res.json();
 
         if (res.ok) {
-            // Save JWT token and user info
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
-
-            // Redirect to dashboard
-            window.location.href = "dashboard.html";
+            window.location.href = "dashboard.html"; // redirect to dashboard
         } else {
             alert(data.message || "Login failed. Check your credentials.");
         }
@@ -56,7 +53,6 @@ signupForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        // Correct signup URL
         const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -68,8 +64,7 @@ signupForm.addEventListener("submit", async (e) => {
 
         if (res.ok) {
             alert("Signup successful! You can now log in.");
-            // Switch to login form automatically
-            document.getElementById("loginBtn").click();
+            document.getElementById("loginBtn").click(); // switch to login form
         } else {
             alert(data.message || "Signup failed. Try again.");
         }

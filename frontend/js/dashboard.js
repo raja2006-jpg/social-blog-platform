@@ -5,7 +5,12 @@ const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
 // ✅ Deployed backend URL
-const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
+const POSTS_URL = "https://social-blog-platform.onrender.com/api/posts";
+
+// Redirect to login if not logged in
+if (!token || !user) {
+  window.location.href = "index.html";
+}
 
 // Fetch all posts and display
 const fetchPosts = async () => {
@@ -36,12 +41,12 @@ const renderPosts = (posts) => {
     postDiv.classList.add("post");
 
     postDiv.innerHTML = `
-      <h4>${post.username}</h4>
+      <h4>${post.username || post.user?.username}</h4>
       <p>${post.content}</p>
       ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
       <small>${new Date(post.createdAt).toLocaleString()}</small>
       ${
-        user && post.user === user._id
+        user && post.user === user.id
           ? `<button class="editBtn" data-id="${post._id}">Edit</button>
              <button class="deleteBtn" data-id="${post._id}">Delete</button>`
           : ""
@@ -106,6 +111,37 @@ const updatePost = async (id, content) => {
     alert("Failed to update post.");
   }
 };
+
+// Handle new post submission
+const postForm = document.getElementById("postForm");
+if (postForm) {
+  postForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const content = e.target.content.value.trim();
+    const image = e.target.image.value.trim();
+
+    if (!content) return alert("Post content cannot be empty");
+
+    try {
+      const res = await fetch(POSTS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content, image }),
+      });
+
+      if (!res.ok) throw new Error("Failed to create post");
+
+      e.target.reset();
+      fetchPosts();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create post");
+    }
+  });
+}
 
 // Initial fetch
 if (feedContainer) fetchPosts();
