@@ -21,34 +21,39 @@
     loginBtn.classList.remove("active");
   });
 
-  // Login
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const identifier = document.getElementById("loginUsername").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
+  // LOGIN
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    if (!identifier || !password) return alert("Enter both username/email and password");
+  const identifier = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
-      });
+  if (!identifier || !password) {
+    return alert("Please enter both username/email and password!");
+  }
 
-      const data = await res.json();
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "/dashboard.html";
-      } else {
-        alert(data.message || "Login failed");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: identifier, password }), // Use email instead of identifier if backend expects email
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message || "Login failed. Check your credentials.");
     }
-  });
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Server error. Try again later.");
+  }
+});
+
 
   // Signup
   signupForm.addEventListener("submit", async (e) => {
