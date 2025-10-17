@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');  // MongoDB connection
+const connectDB = require('./config/db');  // MongoDB connection
 
 const app = express();
 
@@ -11,10 +11,13 @@ connectDB();
 // Parse JSON requests
 app.use(express.json());
 
-// ✅ Enable CORS for your Vercel frontend (remove trailing '/')
+// 🟢 FIX: Temporarily set CORS origin to '*' to allow access from all domains 
+// (especially for local development or if the frontend URL changes).
+// If you want to restrict it later, change '*' back to your specific frontend URL.
 app.use(cors({
-  origin: "https://social-blog-platform-3.onrender.com", // ✅ no slash at end
-  credentials: true
+  origin: '*', // ⬅️ CHANGED TO WILDCARD '*'
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // ⬅️ Added common methods
+  credentials: true
 }));
 
 // ------------------ ROUTES ------------------
@@ -25,7 +28,7 @@ app.use('/api/admin', require('./routes/admin'));
 
 // ------------------ TEST ROUTE ------------------
 app.get('/', (req, res) => {
-  res.send('🚀 Backend Server is Running Successfully!');
+  res.send('🚀 Backend Server is Running Successfully!');
 });
 
 // ------------------ START SERVER ------------------
