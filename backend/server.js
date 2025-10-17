@@ -13,7 +13,7 @@ app.use(express.json());
 
 // ✅ Enable CORS for your Vercel frontend (remove trailing '/')
 app.use(cors({
-  origin: "https://social-blog-platform.vercel.app", // ✅ no slash at end
+  origin: "https://social-blog-platform-3.onrender.com", // ✅ no slash at end
   credentials: true
 }));
 
