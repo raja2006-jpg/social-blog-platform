@@ -11,9 +11,9 @@ connectDB();
 // Parse JSON requests
 app.use(express.json());
 
-// Enable CORS for your frontend
+// ✅ Enable CORS for your Vercel frontend (remove trailing '/')
 app.use(cors({
-  origin: "https://social-blog-platform.vercel.app/", // Replace with your Vercel frontend URL
+  origin: "https://social-blog-platform.vercel.app", // ✅ no slash at end
   credentials: true
 }));
 
