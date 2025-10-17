@@ -1,7 +1,7 @@
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// Deployed backend URL (Render)
+// Deployed backend URL
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
 // ------------------- LOGIN -------------------
@@ -24,12 +24,14 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-    if (res.ok && data.token) {
-      // Save token and user info in localStorage
+    if (data.token) {
+      // ✅ Store token in localStorage
       localStorage.setItem("token", data.token);
+
+      // ✅ Store user info in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Absolute redirect to dashboard (works on hosted site)
+      // ✅ Redirect to dashboard
       window.location.href = "/dashboard.html";
     } else {
       alert(data.message || "Login failed. Check your credentials.");
@@ -63,7 +65,8 @@ signupForm.addEventListener("submit", async (e) => {
 
     if (res.ok) {
       alert("Signup successful! You can now log in.");
-      document.getElementById("loginBtn").click(); // Switch to login form
+      // Switch to login form
+      document.getElementById("loginBtn").click();
     } else {
       alert(data.message || "Signup failed. Try again.");
     }
