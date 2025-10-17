@@ -40,24 +40,27 @@
 
   <!-- Toggle login/signup forms -->
   <script>
+    const loginBtn = document.getElementById("loginBtn");
     const signupBtn = document.getElementById("signupBtn");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
 
     loginBtn.addEventListener("click", () => {
-      document.getElementById("loginForm").classList.remove("hidden");
-      document.getElementById("signupForm").classList.add("hidden");
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
       loginBtn.classList.add("active");
       signupBtn.classList.remove("active");
     });
 
     signupBtn.addEventListener("click", () => {
-      document.getElementById("signupForm").classList.remove("hidden");
-      document.getElementById("loginForm").classList.add("hidden");
+      signupForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
       signupBtn.classList.add("active");
       loginBtn.classList.remove("active");
     });
   </script>
 
   <!-- Auth JS -->
-  <script src="js/auth.js?v=1.0" defer></script>
+  <script src="js/auth.js" defer></script>
 </body>
 </html>
