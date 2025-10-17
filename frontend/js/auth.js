@@ -1,86 +1,72 @@
-// Make sure you only declare these once
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-const loginBtn = document.getElementById("loginBtn");
-const signupBtn = document.getElementById("signupBtn");
+(() => {
+  // Use let to prevent redeclaration errors
+  let loginForm = document.getElementById("loginForm");
+  let signupForm = document.getElementById("signupForm");
 
-const BACKEND_URL = "https://social-blog-platform.onrender.com/";
+  // Your deployed backend URL
+  const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
-// ------------------ Toggle Forms ------------------
-loginBtn.addEventListener("click", () => {
-  loginForm.classList.remove("hidden");
-  signupForm.classList.add("hidden");
-  loginBtn.classList.add("active");
-  signupBtn.classList.remove("active");
-});
+  // ------------------- LOGIN -------------------
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-signupBtn.addEventListener("click", () => {
-  signupForm.classList.remove("hidden");
-  loginForm.classList.add("hidden");
-  signupBtn.classList.add("active");
-  loginBtn.classList.remove("active");
-});
+    const identifier = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
-// ------------------ Login ------------------
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    if (!identifier || !password) return alert("Please enter both username/email and password!");
 
-  const identifier = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, password }),
+      });
 
-  if (!identifier || !password) return alert("Enter username/email and password!");
+      const data = await res.json();
 
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ identifier, password }),
-    });
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-    const data = await res.json();
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "dashboard.html";
-    } else {
-      alert(data.message || "Login failed.");
+        // Redirect to dashboard
+        window.location.href = "/dashboard.html";
+      } else {
+        alert(data.message || "Login failed. Check your credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Try again later.");
     }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Server error. Try again later.");
-  }
-});
+  });
 
-// ------------------ Signup ------------------
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // ------------------- SIGNUP -------------------
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const username = document.getElementById("signupUsername").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value.trim();
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
 
-  if (!username || !email || !password) return alert("Fill all fields!");
+    if (!username || !email || !password) return alert("Please fill all fields!");
 
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.user) {
-      alert("Signup successful! Please login.");
-      signupForm.reset();
-      loginForm.classList.remove("hidden");
-      signupForm.classList.add("hidden");
-    } else {
-      alert(data.message || "Signup failed.");
+      if (res.ok) {
+        alert("Signup successful! You can now log in.");
+        document.getElementById("loginBtn").click();
+      } else {
+        alert(data.message || "Signup failed. Try again.");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      alert("Server error. Try again later.");
     }
-  } catch (err) {
-    console.error("Signup error:", err);
-    alert("Server error. Try again later.");
-  }
-});
+  });
+})();
