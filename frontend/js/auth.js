@@ -20,7 +20,7 @@ loginForm.addEventListener("submit", async (e) => {
         const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ identifier: email, password }) // ✅ Use 'identifier'
         });
 
         const data = await res.json();
@@ -29,8 +29,8 @@ loginForm.addEventListener("submit", async (e) => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
-            // Redirect to dashboard
-            window.location.href = "/dashboard.html";
+            // ✅ Redirect to dashboard
+            window.location.href = "dashboard.html";
         } else {
             alert(data.message || "Login failed. Check your credentials.");
         }
