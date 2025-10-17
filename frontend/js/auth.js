@@ -33,6 +33,8 @@ loginForm.addEventListener("submit", async (e) => {
 
       // ✅ Redirect to dashboard
       window.location.href = "dashboard.html";
+      window.location.href = "dashboard.html";
+
     } else {
       alert(data.message || "Login failed. Check your credentials.");
     }
