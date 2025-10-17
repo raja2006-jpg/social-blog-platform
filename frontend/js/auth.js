@@ -3,7 +3,7 @@
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// Replace with your deployed backend URL
+// Replace with your Render backend URL
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
 // ------------------- LOGIN -------------------
@@ -19,7 +19,8 @@ loginForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        const res = await fetch(`${BACKEND_URL}/login`, {
+        // Correct full URL to backend login endpoint
+        const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ identifier: email, password }),
@@ -29,9 +30,12 @@ loginForm.addEventListener("submit", async (e) => {
         const data = await res.json();
 
         if (res.ok) {
+            // Save JWT token and user info
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
-            window.location.href = "dashboard.html"; // redirect
+
+            // Redirect to dashboard
+            window.location.href = "dashboard.html";
         } else {
             alert(data.message || "Login failed. Check your credentials.");
         }
@@ -55,7 +59,7 @@ signupForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        const res = await fetch(`${BACKEND_URL}/signup`, {
+        const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, email, password }),
