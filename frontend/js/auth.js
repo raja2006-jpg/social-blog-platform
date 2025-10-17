@@ -1,83 +1,73 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // ------------------ SELECT FORMS ------------------
-    const loginForm = document.getElementById("loginForm");
-    const signupForm = document.getElementById("signupForm");
+// ------------------- BACKEND URL -------------------
+const BACKEND_URL = "https://social-blog-platform.onrender.com/"; // <-- Replace with your deployed backend URL
 
-    // ------------------ BACKEND URL ------------------
-    const BACKEND_URL = "https://social-blog-platform-3.onrender.com";
+// ------------------- LOGIN -------------------
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    // ------------------ LOGIN ------------------
-    if (loginForm) {
-        loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById("loginUsername").value.trim();
-            const password = document.getElementById("loginPassword").value.trim();
+  const identifier = document.getElementById("loginUsername").value.trim();
+  const password   = document.getElementById("loginPassword").value.trim();
 
-            if (!identifier || !password) {
-                return alert("Please enter both username/email and password!");
-            }
+  if (!identifier || !password) {
+    return alert("Please enter both username/email and password!");
+  }
 
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ identifier, password })
-                });
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password })
+    });
 
-                const data = await res.json();
+    const data = await res.json();
 
-                if (data.token) {
-                    // ✅ Store token and user
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify(data.user));
+    if (data.token) {
+      // ✅ Save token & user info
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-                    // ✅ Redirect to dashboard
-                    window.location.href = "/dashboard.html";
-                } else {
-                    alert(data.message || "Login failed. Check your credentials.");
-                }
-            } catch (err) {
-                console.error("Login error:", err);
-                alert("Server error. Try again later.");
-            }
-        });
+      // ✅ Redirect to dashboard
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message || "Login failed. Check your credentials.");
     }
 
-    // ------------------ SIGNUP ------------------
-    if (signupForm) {
-        signupForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const username = document.getElementById("signupUsername").value.trim();
-            const email = document.getElementById("signupEmail").value.trim();
-            const password = document.getElementById("signupPassword").value.trim();
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Server error. Try again later.");
+  }
+});
 
-            if (!username || !email || !password) {
-                return alert("Please fill all fields!");
-            }
+// ------------------- SIGNUP -------------------
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, email, password })
-                });
+  const username = document.getElementById("signupUsername").value.trim();
+  const email    = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
 
-                const data = await res.json();
+  if (!username || !email || !password) {
+    return alert("Please fill all fields!");
+  }
 
-                if (res.ok && data.token) {
-                    // ✅ Store token and user immediately after signup
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify(data.user));
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password })
+    });
 
-                    alert("Signup successful! Redirecting to dashboard...");
-                    window.location.href = "/dashboard.html";
-                } else {
-                    alert(data.message || "Signup failed. Try again.");
-                }
-            } catch (err) {
-                console.error("Signup error:", err);
-                alert("Server error. Try again later.");
-            }
-        });
+    const data = await res.json();
+
+    if (res.ok || data.token) {
+      alert("Signup successful! You can now log in.");
+      document.getElementById("loginBtn").click(); // switch to login
+    } else {
+      alert(data.message || "Signup failed. Try again.");
     }
+
+  } catch (err) {
+    console.error("Signup error:", err);
+    alert("Server error. Try again later.");
+  }
 });
