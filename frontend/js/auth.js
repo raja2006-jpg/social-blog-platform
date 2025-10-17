@@ -1,19 +1,18 @@
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// Deployed backend URL
+// ✅ Deployed backend URL
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
-
 
 // ------------------- LOGIN -------------------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("loginUsername").value.trim();
+  const identifier = document.getElementById("loginUsername").value.trim(); // username or email
   const password = document.getElementById("loginPassword").value.trim();
 
-  if (!email || !password) {
-    alert("Please enter both email and password!");
+  if (!identifier || !password) {
+    alert("Please enter both username/email and password!");
     return;
   }
 
@@ -21,7 +20,7 @@ loginForm.addEventListener("submit", async (e) => {
     const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ identifier: email, password }), // ✅ 'identifier'
+      body: JSON.stringify({ identifier, password }),
     });
 
     const data = await res.json();
@@ -31,10 +30,8 @@ loginForm.addEventListener("submit", async (e) => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Redirect to dashboard
+      // Redirect to dashboard
       window.location.href = "dashboard.html";
-      window.location.href = "dashboard.html";
-
     } else {
       alert(data.message || "Login failed. Check your credentials.");
     }
@@ -68,7 +65,7 @@ signupForm.addEventListener("submit", async (e) => {
 
     if (res.ok) {
       alert("Signup successful! You can now log in.");
-      document.getElementById("loginBtn").click(); // switch to login
+      document.getElementById("loginBtn").click(); // Switch to login form
     } else {
       alert(data.message || "Signup failed. Try again.");
     }
