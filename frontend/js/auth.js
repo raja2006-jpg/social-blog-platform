@@ -21,39 +21,37 @@
     loginBtn.classList.remove("active");
   });
 
-  // ------------------- LOGIN -------------------
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+// LOGIN
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const identifier = document.getElementById("loginUsername").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
+  const email = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-    if (!identifier || !password) {
-      return alert("Enter both username/email and password");
+  if (!email || !password) return alert("Enter both email and password");
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }), // 👈 send 'email'
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message || "Login failed. Check your credentials.");
     }
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Server error. Try again later.");
+  }
+});
 
-    try {
-      // ✅ Correct fetch syntax
-      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "/dashboard.html";
-      } else {
-        alert(data.message || "Login failed. Check your credentials.");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Server error. Try again later.");
-    }
-  });
 
   // ------------------- SIGNUP -------------------
   signupForm.addEventListener("submit", async (e) => {
