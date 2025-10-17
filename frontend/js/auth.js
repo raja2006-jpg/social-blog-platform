@@ -4,6 +4,7 @@ const signupForm = document.getElementById("signupForm");
 // Deployed backend URL
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
+
 // ------------------- LOGIN -------------------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
