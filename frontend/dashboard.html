@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Social Blog</title>
   <!-- Cache-busting -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=1.0">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
     nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #333; color: white; }
@@ -51,18 +51,18 @@
   <!-- Posts Feed -->
   <section class="feed" id="feedContainer"></section>
 
-  <!-- Scripts -->
-  <script src="js/posts.js" defer></script>
-  <script src="js/dashboard.js" defer></script>
+  <!-- JS Scripts -->
+  <script src="js/posts.js?v=1.0" defer></script>
+  <script src="js/dashboard.js?v=1.0" defer></script>
 
+  <!-- Protect dashboard and logout -->
   <script defer>
-    // ------------------ PROTECT DASHBOARD ------------------
-    (() => {
+    (function() {
       const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(localStorage.getItem("user"));
 
-      if (!token || !user.username) {
-        // Redirect to login if not logged in
+      // If not logged in, redirect to login
+      if (!token || !user) {
         window.location.replace("index.html");
         return;
       }
@@ -70,9 +70,8 @@
       // Show welcome message
       document.getElementById("welcomeMessage").innerText = `Welcome, ${user.username}!`;
 
-      // Logout functionality
-      const logoutBtn = document.getElementById("logoutBtn");
-      logoutBtn.addEventListener("click", () => {
+      // Logout button
+      document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         window.location.replace("index.html");
