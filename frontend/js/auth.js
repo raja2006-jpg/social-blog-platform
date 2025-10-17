@@ -1,4 +1,3 @@
-// auth.js
 (() => {
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
@@ -34,10 +33,11 @@
     }
 
     try {
+      // ✅ Correct fetch syntax
       const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }) // frontend sends 'identifier'
+        body: JSON.stringify({ identifier, password }),
       });
 
       const data = await res.json();
@@ -71,14 +71,14 @@
       const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password })
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         alert("Signup successful! You can now log in.");
-        loginBtn.click(); // switch to login form
+        loginBtn.click();
       } else {
         alert(data.message || "Signup failed. Try again.");
       }
