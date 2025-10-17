@@ -34,10 +34,10 @@
     }
 
     try {
-      const res = await fetch($[BACKEND_URL]/api/auth/login, {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier: identifier, password: password })
+        body: JSON.stringify({ identifier, password }) // frontend sends 'identifier'
       });
 
       const data = await res.json();
@@ -68,10 +68,10 @@
     }
 
     try {
-      const res = await fetch($[BACKEND_URL]/api/auth/register, {
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username, email: email, password: password })
+        body: JSON.stringify({ username, email, password })
       });
 
       const data = await res.json();
