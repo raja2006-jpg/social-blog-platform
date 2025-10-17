@@ -10,7 +10,7 @@ loginForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        const res = await fetch(`${API_URL}/login`, {
+        const res = await fetch(`https://social-blog-backend.onrender.com/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ identifier: email, password }) // use "identifier" key
