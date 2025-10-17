@@ -1,5 +1,3 @@
-// auth.js
-
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
@@ -19,7 +17,6 @@ loginForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        // Correct full URL to backend login endpoint
         const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -59,7 +56,8 @@ signupForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
+        // Correct signup URL
+        const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, email, password }),

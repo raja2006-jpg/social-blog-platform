@@ -42,11 +42,14 @@ router.post("/register", async (req, res) => {
 
 // ------------------ LOGIN user ------------------
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, password } = req.body; // frontend sends "identifier"
 
   try {
-    // Find user
-    const user = await User.findOne({ email });
+    // Find user by email OR username
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }],
+    });
+
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     // Check password

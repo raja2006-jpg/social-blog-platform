@@ -8,12 +8,12 @@ const app = express();
 connectDB();
 
 // ------------------ MIDDLEWARES ------------------
-// Replace bodyParser with built-in express.json()
+// Parse JSON requests
 app.use(express.json());
 
-// CORS configuration for your Vercel frontend
+// Enable CORS for your frontend
 app.use(cors({
-  origin: "https://social-blog-frontend.vercel.app", // Replace with your actual frontend URL
+  origin: "https://social-blog-frontend.vercel.app", // Replace with your Vercel frontend URL
   credentials: true
 }));
 
