@@ -24,6 +24,7 @@
     .post .deleteBtn { background: crimson; color: white; }
   </style>
 </head>
+
 <body>
   <!-- Navbar -->
   <nav>
@@ -47,28 +48,31 @@
   </section>
 
   <!-- Posts Feed -->
-  <section class="feed" id="feedContainer">
-    <!-- Posts will be dynamically added here by dashboard.js -->
-  </section>
+  <section class="feed" id="feedContainer"></section>
 
+  <!-- Scripts -->
   <script src="js/posts.js"></script>
   <script src="js/dashboard.js"></script>
   <script>
-    // Check if user is logged in
+    // ------------------ LOGIN CHECK ------------------
+    const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-     window.location.href = "index.html"; // redirect to login
+
+    if (!token || !user) {
+      // Not logged in → redirect
+      window.location.href = "/index.html";
     } else {
+      // Show welcome message
       document.getElementById("welcomeMessage").innerText = `Welcome, ${user.username}!`;
     }
 
-    // Logout functionality
+    // ------------------ LOGOUT ------------------
     const logoutBtn = document.getElementById("logoutBtn");
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "index.html";
-    }); 
+      window.location.href = "/index.html";
+    });
   </script>
 </body>
 </html>

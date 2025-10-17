@@ -1,18 +1,18 @@
 // frontend/js/dashboard.js
 
 const feedContainer = document.getElementById("feedContainer");
+const postForm = document.getElementById("postForm");
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
-// ✅ Deployed backend URL
 const POSTS_URL = "https://social-blog-platform.onrender.com/api/posts";
 
 // Redirect to login if not logged in
 if (!token || !user) {
-  window.location.href = "index.html";
+  window.location.href = "/index.html";
 }
 
-// Fetch all posts and display
+// ---------------- FETCH POSTS ----------------
 const fetchPosts = async () => {
   if (!feedContainer) return;
 
@@ -31,22 +31,24 @@ const fetchPosts = async () => {
   }
 };
 
-// Render posts in feed
+// ---------------- RENDER POSTS ----------------
 const renderPosts = (posts) => {
   if (!feedContainer) return;
   feedContainer.innerHTML = "";
 
   posts.forEach((post) => {
+    const isOwner = post.user?._id === user.id;
+
     const postDiv = document.createElement("div");
     postDiv.classList.add("post");
 
     postDiv.innerHTML = `
-      <h4>${post.username || post.user?.username}</h4>
+      <h4>${post.user?.username || "Unknown"}</h4>
       <p>${post.content}</p>
       ${post.image ? `<img src="${post.image}" alt="Post image" />` : ""}
       <small>${new Date(post.createdAt).toLocaleString()}</small>
       ${
-        user && post.user === user.id
+        isOwner
           ? `<button class="editBtn" data-id="${post._id}">Edit</button>
              <button class="deleteBtn" data-id="${post._id}">Delete</button>`
           : ""
@@ -74,7 +76,7 @@ const renderPosts = (posts) => {
   });
 };
 
-// Delete post
+// ---------------- DELETE POST ----------------
 const deletePost = async (id) => {
   try {
     const res = await fetch(`${POSTS_URL}/${id}`, {
@@ -91,7 +93,7 @@ const deletePost = async (id) => {
   }
 };
 
-// Update post
+// ---------------- UPDATE POST ----------------
 const updatePost = async (id, content) => {
   try {
     const res = await fetch(`${POSTS_URL}/${id}`, {
@@ -112,8 +114,7 @@ const updatePost = async (id, content) => {
   }
 };
 
-// Handle new post submission
-const postForm = document.getElementById("postForm");
+// ---------------- CREATE POST ----------------
 if (postForm) {
   postForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -144,4 +145,4 @@ if (postForm) {
 }
 
 // Initial fetch
-if (feedContainer) fetchPosts();
+fetchPosts();
