@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Social Blog</title>
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Cache-busting with ?v=1.0 -->
+  <link rel="stylesheet" href="css/style.css?v=1.0">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
     nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #333; color: white; }
@@ -14,6 +15,8 @@
     .welcome-msg { text-align: center; margin: 20px; font-size: 1.2em; font-weight: bold; }
     .new-post { background: white; margin: 20px auto; padding: 15px; max-width: 600px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     .new-post textarea, .new-post input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; resize: vertical; font-size: 1em; }
+    .new-post textarea { autocomplete: "off"; }
+    .new-post input { autocomplete: "off"; }
     .new-post button { padding: 10px 20px; border: none; background: #007bff; color: white; font-size: 1em; border-radius: 5px; cursor: pointer; }
     .new-post button:hover { background: #0056b3; }
     .feed { max-width: 600px; margin: 20px auto; }
@@ -41,8 +44,8 @@
   <!-- New Post Form -->
   <section class="new-post">
     <form id="postForm">
-      <textarea name="content" placeholder="What's on your mind?" required></textarea>
-      <input type="text" name="image" placeholder="Image URL (optional)" />
+      <textarea name="content" placeholder="What's on your mind?" required autocomplete="off"></textarea>
+      <input type="text" name="image" placeholder="Image URL (optional)" autocomplete="off" />
       <button type="submit">Post</button>
     </form>
   </section>
@@ -50,9 +53,10 @@
   <!-- Posts Feed -->
   <section class="feed" id="feedContainer"></section>
 
-  <!-- Scripts -->
-  <script src="js/posts.js"></script>
-  <script src="js/dashboard.js"></script>
+  <!-- Scripts with cache-busting -->
+  <script src="js/posts.js?v=1.0"></script>
+  <script src="js/dashboard.js?v=1.0"></script>
+
   <script>
     // ------------------ PROTECT DASHBOARD ------------------
     (function() {
@@ -60,12 +64,13 @@
       const user = JSON.parse(localStorage.getItem("user"));
 
       if (!token || !user) {
-        // Not logged in → redirect immediately
+        // Redirect immediately if not logged in
         window.location.replace("/index.html");
-      } else {
-        // Show welcome message
-        document.getElementById("welcomeMessage").innerText = `Welcome, ${user.username}!`;
+        return;
       }
+
+      // Show welcome message
+      document.getElementById("welcomeMessage").innerText = `Welcome, ${user.username}!`;
 
       // ------------------ LOGOUT ------------------
       const logoutBtn = document.getElementById("logoutBtn");

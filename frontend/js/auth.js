@@ -1,20 +1,18 @@
-// Backend URL
+// js/auth.js
 const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
-// Get forms (already declared in index.html)
+// Get DOM elements
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// ------------------- LOGIN -------------------
+// ------------------ LOGIN ------------------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const identifier = document.getElementById("loginUsername").value.trim();
-  const password   = document.getElementById("loginPassword").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-  if (!identifier || !password) {
-    return alert("Please enter both username/email and password!");
-  }
+  if (!identifier || !password) return alert("Please enter both username/email and password!");
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
@@ -25,13 +23,13 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-    if (data.token) { 
-      // Store token & user in localStorage
+    if (data.token) {
+      // Store token & user
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect to dashboard
-      window.location.href = "/dashboard.html";
+      window.location.replace("/dashboard.html");
     } else {
       alert(data.message || "Login failed. Check your credentials.");
     }
@@ -42,17 +40,15 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ------------------- SIGNUP -------------------
+// ------------------ SIGNUP ------------------
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("signupUsername").value.trim();
-  const email    = document.getElementById("signupEmail").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
   const password = document.getElementById("signupPassword").value.trim();
 
-  if (!username || !email || !password) {
-    return alert("Please fill all fields!");
-  }
+  if (!username || !email || !password) return alert("Please fill all fields!");
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
@@ -63,12 +59,17 @@ signupForm.addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-    if (res.ok) {
-      alert("Signup successful! You can now log in.");
-      document.getElementById("loginBtn").click(); // switch to login form
+    if (res.ok && data.token) {
+      // Store token & user immediately after signup
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Redirect to dashboard
+      window.location.replace("/dashboard.html");
     } else {
       alert(data.message || "Signup failed. Try again.");
     }
+
   } catch (err) {
     console.error("Signup error:", err);
     alert("Server error. Try again later.");
