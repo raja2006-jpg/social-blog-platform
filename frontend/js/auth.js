@@ -6,7 +6,7 @@
 
   const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
-  // Toggle login/signup forms
+  // ------------------- Toggle Login/Signup -------------------
   loginBtn.addEventListener("click", () => {
     loginForm.classList.remove("hidden");
     signupForm.classList.add("hidden");
@@ -21,7 +21,7 @@
     loginBtn.classList.remove("active");
   });
 
-  // ✅ LOGIN
+  // ------------------- LOGIN -------------------
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -29,22 +29,20 @@
     const password = document.getElementById("loginPassword").value.trim();
 
     if (!identifier || !password) {
-      alert("Enter both username/email and password");
-      return;
+      return alert("Enter both username/email and password");
     }
 
     try {
       const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier: email, password })
-
+        body: JSON.stringify({ identifier, password }), // identifier matches backend
       });
 
       const data = await res.json();
-      console.log("Login response:", data);
 
       if (res.ok && data.token) {
+        // Save token and user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         window.location.href = "/dashboard.html";
@@ -53,11 +51,11 @@
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Server error");
+      alert("Server error. Try again later.");
     }
   });
 
-  // ✅ SIGNUP
+  // ------------------- SIGNUP -------------------
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -66,8 +64,7 @@
     const password = document.getElementById("signupPassword").value.trim();
 
     if (!username || !email || !password) {
-      alert("Please fill all fields");
-      return;
+      return alert("Please fill all fields");
     }
 
     try {
@@ -78,17 +75,16 @@
       });
 
       const data = await res.json();
-      console.log("Signup response:", data);
 
       if (res.ok) {
         alert("Signup successful! You can now log in.");
-        loginBtn.click();
+        loginBtn.click(); // Switch to login form
       } else {
         alert(data.message || "Signup failed");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      alert("Server error");
+      alert("Server error. Try again later.");
     }
   });
 })();
