@@ -37,7 +37,8 @@
       const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: identifier, password }), // ✅ fixed field name
+        body: JSON.stringify({ identifier: email, password })
+
       });
 
       const data = await res.json();
