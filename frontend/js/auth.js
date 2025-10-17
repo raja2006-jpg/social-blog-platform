@@ -22,7 +22,7 @@ loginForm.addEventListener("submit", async (e) => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       // absolute path is safer on hosted sites
-      window.location.href = "dashboard.html";
+      window.location.href = "/dashboard.html";
     } else {
       alert(data.message || "Login failed. Check your credentials.");
     }
