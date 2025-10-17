@@ -1,57 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Blog - Login / Signup</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Blog - Login / Signup</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Optional quick fix if your CSS doesn’t already handle visibility */
+    .hidden {
+      display: none;
+    }
+    .active {
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="form-box">
-            <h2>Social Blog</h2>
-            <div class="button-box">
-                <button id="loginBtn" class="toggle-btn">Log In</button>
-                <button id="signupBtn" class="toggle-btn">Sign Up</button>
-            </div>
+  <div class="container">
+    <div class="form-box">
+      <h2>Social Blog</h2>
 
-            <div id="loginMessage" style="color:red; margin:5px 0;"></div>
-            <div id="registerMessage" style="color:green; margin:5px 0;"></div>
+      <div class="button-box">
+        <button id="loginBtn" class="toggle-btn active">Log In</button>
+        <button id="signupBtn" class="toggle-btn">Sign Up</button>
+      </div>
 
-            <!-- Login Form -->
-            <form id="loginForm" class="input-group">
-                <input type="text" name="email" placeholder="Email" class="input-field" required>
-                <input type="password" name="password" placeholder="Enter Password" class="input-field" required>
-                <button type="submit" class="submit-btn">Log In</button>
-            </form>
+      <!-- Login Form -->
+      <form id="loginForm" class="input-group">
+        <input
+          type="text"
+          id="loginEmail"
+          placeholder="Email"
+          class="input-field"
+          required
+        />
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Enter Password"
+          class="input-field"
+          required
+        />
+        <p id="loginMessage" class="msg"></p>
+        <button type="submit" class="submit-btn">Log In</button>
+      </form>
 
-            <!-- Signup Form -->
-            <form id="registerForm" class="input-group" style="display: none;">
-                <input type="text" name="username" placeholder="Username" class="input-field" required>
-                <input type="email" name="email" placeholder="Email" class="input-field" required>
-                <input type="password" name="password" placeholder="Enter Password" class="input-field" required>
-                <button type="submit" class="submit-btn">Sign Up</button>
-            </form>
-        </div>
+      <!-- Signup Form -->
+      <form id="registerForm" class="input-group hidden">
+        <input
+          type="text"
+          id="registerUsername"
+          placeholder="Username"
+          class="input-field"
+          required
+        />
+        <input
+          type="email"
+          id="registerEmail"
+          placeholder="Email"
+          class="input-field"
+          required
+        />
+        <input
+          type="password"
+          id="registerPassword"
+          placeholder="Enter Password"
+          class="input-field"
+          required
+        />
+        <p id="registerMessage" class="msg"></p>
+        <button type="submit" class="submit-btn">Sign Up</button>
+      </form>
     </div>
+  </div>
 
-    <script src="js/auth.js"></script>
-    <script>
-        // Toggle forms
-        const loginBtn = document.getElementById('loginBtn');
-        const signupBtn = document.getElementById('signupBtn');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
+  <script>
+    // Toggle between Login and Signup forms
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
 
-        loginBtn.addEventListener('click', () => {
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-        });
+    loginBtn.addEventListener("click", () => {
+      loginForm.classList.remove("hidden");
+      registerForm.classList.add("hidden");
+      loginBtn.classList.add("active");
+      signupBtn.classList.remove("active");
+    });
 
-        signupBtn.addEventListener('click', () => {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-        });
-    </script>
+    signupBtn.addEventListener("click", () => {
+      registerForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+      signupBtn.classList.add("active");
+      loginBtn.classList.remove("active");
+    });
+  </script>
+
+  <script src="js/auth.js"></script>
 </body>
 </html>

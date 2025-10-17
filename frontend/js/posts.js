@@ -3,14 +3,25 @@
 const postForm = document.getElementById("postForm");
 const token = localStorage.getItem("token");
 
-// Deployed backend URL
+// ✅ Deployed backend URL
 const POSTS_URL = "https://social-blog-backend.onrender.com/api/posts";
 
 if (postForm) {
   postForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const content = postForm.content.value;
-    const image = postForm.image.value;
+
+    if (!token) {
+      alert("You must be logged in to post.");
+      return;
+    }
+
+    const content = postForm.content.value.trim();
+    const image = postForm.image.value.trim();
+
+    if (!content) {
+      alert("Post content cannot be empty!");
+      return;
+    }
 
     try {
       const res = await fetch(POSTS_URL, {
@@ -22,17 +33,20 @@ if (postForm) {
         body: JSON.stringify({ content, image }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         postForm.reset();
         alert("Post added successfully!");
-        window.location.reload();
+        // Optional: Refresh posts without reloading page
+        const event = new Event("refreshFeed");
+        window.dispatchEvent(event);
       } else {
-        const data = await res.json();
         alert(data.message || "Failed to add post.");
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to add post.");
+      alert("Failed to add post. Server error.");
     }
   });
 }

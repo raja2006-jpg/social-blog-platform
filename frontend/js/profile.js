@@ -3,19 +3,28 @@
 const profileForm = document.getElementById('profileForm');
 const token = localStorage.getItem('token');
 
-// Deployed backend URL
+// ✅ Deployed backend URL for current user
 const API_URL = "https://social-blog-backend.onrender.com/api/users/me";
 
-// Load profile
+// Check if user is logged in
+if (!token) {
+    alert("You must be logged in to access your profile.");
+    window.location.href = "index.html";
+}
+
+// Load user profile
 const loadProfile = async () => {
     try {
-        const res = await fetch(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(API_URL, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
         if (!res.ok) throw new Error("Failed to fetch profile");
 
         const user = await res.json();
         if (profileForm) {
-            profileForm.username.value = user.username;
-            profileForm.email.value = user.email;
+            profileForm.querySelector('input[name="username"]').value = user.username || '';
+            profileForm.querySelector('input[name="email"]').value = user.email || '';
         }
     } catch (err) {
         console.error(err);
@@ -27,9 +36,15 @@ const loadProfile = async () => {
 if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const username = profileForm.username.value;
-        const email = profileForm.email.value;
-        const password = profileForm.password.value;
+
+        const username = profileForm.querySelector('input[name="username"]').value.trim();
+        const email = profileForm.querySelector('input[name="email"]').value.trim();
+        const password = profileForm.querySelector('input[name="password"]').value.trim();
+
+        if (!username || !email) {
+            alert("Username and Email cannot be empty!");
+            return;
+        }
 
         try {
             const res = await fetch(API_URL, {
@@ -42,6 +57,7 @@ if (profileForm) {
             });
 
             const data = await res.json();
+
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
                 alert('Profile updated successfully!');
@@ -50,7 +66,7 @@ if (profileForm) {
             }
         } catch (err) {
             console.error(err);
-            alert("Failed to update profile.");
+            alert("Failed to update profile. Server error.");
         }
     });
 }

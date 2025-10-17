@@ -1,37 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Social Blog</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Social Blog</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
 
+    header {
+      background: #333;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    section {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    .admin-item {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-item button {
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .admin-item button:hover {
+      background: darkred;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1>Admin Panel</h1>
-        <nav>
-            <a href="dashboard.html">Home</a>
-            <a href="index.html">Logout</a>
-        </nav>
-    </header>
+  <header>
+    <h1>Admin Panel</h1>
+    <nav>
+      <a href="dashboard.html">Home</a>
+      <a href="index.html" onclick="logout()">Logout</a>
+    </nav>
+  </header>
 
-    <main>
-        <section class="admin-posts">
-            <h2>All Posts</h2>
-            <div id="adminPostsContainer">
-                <!-- Admin can edit/delete posts here -->
-            </div>
-        </section>
+  <main>
+    <section class="admin-posts">
+      <h2>All Posts</h2>
+      <div id="adminPostsContainer">
+        <!-- Admin can edit/delete posts here -->
+      </div>
+    </section>
 
-        <section class="admin-users">
-            <h2>All Users</h2>
-            <div id="adminUsersContainer">
-                <!-- Admin can manage users here -->
-            </div>
-        </section>
-    </main>
+    <section class="admin-users">
+      <h2>All Users</h2>
+      <div id="adminUsersContainer">
+        <!-- Admin can manage users here -->
+      </div>
+    </section>
+  </main>
 
-    <script src="js/admin.js"></script>
+  <script>
+    // ✅ Logout clears token and redirects to login
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <script src="js/admin.js"></script>
 </body>
 </html>

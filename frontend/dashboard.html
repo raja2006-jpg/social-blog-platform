@@ -1,45 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Social Blog</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Social Blog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: #333;
+      color: white;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    nav .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    nav .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .new-post {
+      background: white;
+      margin: 20px auto;
+      padding: 15px;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .new-post textarea, .new-post input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      font-size: 1em;
+    }
+
+    .new-post button {
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .new-post button:hover {
+      background: #0056b3;
+    }
+
+    .feed {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .post {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .post img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    .post button {
+      margin-right: 10px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .post .editBtn {
+      background: orange;
+      color: white;
+    }
+
+    .post .deleteBtn {
+      background: crimson;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav>
-        <div class="logo">SocialBlog</div>
-        <div class="nav-links">
-            <a href="profile.html">Profile</a>
-            <a href="#" id="logoutBtn">Logout</a>
-        </div>
-    </nav>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">SocialBlog</div>
+    <div class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
 
-    <!-- New Post Form -->
-    <section class="new-post">
-        <form id="postForm">
-            <textarea name="content" placeholder="What's on your mind?" required></textarea>
-            <input type="text" name="image" placeholder="Image URL (optional)" />
-            <button type="submit">Post</button>
-        </form>
-    </section>
+  <!-- New Post Form -->
+  <section class="new-post">
+    <form id="postForm">
+      <textarea name="content" placeholder="What's on your mind?" required></textarea>
+      <input type="text" name="image" placeholder="Image URL (optional)" />
+      <button type="submit">Post</button>
+    </form>
+  </section>
 
-    <!-- Posts Feed -->
-    <section class="feed" id="feedContainer">
-        <!-- Posts will be dynamically added here by dashboard.js -->
-    </section>
+  <!-- Posts Feed -->
+  <section class="feed" id="feedContainer">
+    <!-- Posts will be dynamically added here by dashboard.js -->
+  </section>
 
-    <script src="js/posts.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script>
-        // Logout functionality
-        const logoutBtn = document.getElementById("logoutBtn");
-        logoutBtn.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "index.html";
-        });
-    </script>
+  <script src="js/posts.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    // Logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    });
+  </script>
 </body>
 </html>
