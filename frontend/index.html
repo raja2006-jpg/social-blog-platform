@@ -26,53 +26,21 @@
         <button id="loginBtn" class="toggle-btn active">Log In</button>
         <button id="signupBtn" class="toggle-btn">Sign Up</button>
       </div>
-
       <!-- Login Form -->
-      <form id="loginForm" class="input-group">
-        <input
-          type="text"
-          id="loginEmail"
-          placeholder="Email"
-          class="input-field"
-          required
-        />
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="Enter Password"
-          class="input-field"
-          required
-        />
-        <p id="loginMessage" class="msg"></p>
-        <button type="submit" class="submit-btn">Log In</button>
-      </form>
+<form id="loginForm" class="input-group">
+    <input type="text" name="email" id="loginUsername" placeholder="Username or Email" class="input-field" required />
+    <input type="password" name="password" id="loginPassword" placeholder="Enter Password" class="input-field" required />
+    <button type="submit" class="submit-btn">Log In</button>
+</form>
 
-      <!-- Signup Form -->
-      <form id="registerForm" class="input-group hidden">
-        <input
-          type="text"
-          id="registerUsername"
-          placeholder="Username"
-          class="input-field"
-          required
-        />
-        <input
-          type="email"
-          id="registerEmail"
-          placeholder="Email"
-          class="input-field"
-          required
-        />
-        <input
-          type="password"
-          id="registerPassword"
-          placeholder="Enter Password"
-          class="input-field"
-          required
-        />
-        <p id="registerMessage" class="msg"></p>
-        <button type="submit" class="submit-btn">Sign Up</button>
-      </form>
+<!-- Signup Form -->
+<form id="signupForm" class="input-group" style="display: none;">
+    <input type="text" name="username" id="signupUsername" placeholder="Username" class="input-field" required />
+    <input type="email" name="email" id="signupEmail" placeholder="Email" class="input-field" required />
+    <input type="password" name="password" id="signupPassword" placeholder="Enter Password" class="input-field" required />
+    <button type="submit" class="submit-btn">Sign Up</button>
+</form>
+
     </div>
   </div>
 

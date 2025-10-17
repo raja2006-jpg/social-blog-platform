@@ -30,11 +30,10 @@ if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const inputs = loginForm.querySelectorAll("input");
-    const identifier = inputs[0].value.trim(); // username or email
-    const password = inputs[1].value.trim();
+    const emailOrUsername = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
-    if (!identifier || !password) {
+    if (!emailOrUsername || !password) {
       alert("Please enter all fields!");
       return;
     }
@@ -43,7 +42,7 @@ if (loginForm) {
       const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: identifier, password }),
+        body: JSON.stringify({ email: emailOrUsername, password }), // Backend expects email
       });
 
       const data = await res.json();
@@ -51,9 +50,9 @@ if (loginForm) {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "dashboard.html";
+        window.location.href = "dashboard.html"; // Redirect after successful login
       } else {
-        alert(data.message || "Login failed. Try again.");
+        alert(data.message || "Login failed. Check credentials.");
       }
     } catch (err) {
       console.error(err);
@@ -67,10 +66,9 @@ if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const inputs = signupForm.querySelectorAll("input");
-    const username = inputs[0].value.trim();
-    const email = inputs[1].value.trim();
-    const password = inputs[2].value.trim();
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
 
     if (!username || !email || !password) {
       alert("Please fill all fields!");
