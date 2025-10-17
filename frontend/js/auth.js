@@ -1,4 +1,4 @@
-(() => {
+document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
   const loginBtn = document.getElementById("loginBtn");
@@ -6,9 +6,7 @@
 
   const BACKEND_URL = "https://social-blog-platform.onrender.com";
 
-  // =============================
   // Toggle login/signup forms
-  // =============================
   loginBtn.addEventListener("click", () => {
     loginForm.classList.remove("hidden");
     signupForm.classList.add("hidden");
@@ -23,24 +21,19 @@
     loginBtn.classList.remove("active");
   });
 
-  // =============================
-  // LOGIN FUNCTION
-  // =============================
+  // LOGIN
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const identifier = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
 
-    if (!identifier || !password) {
+    if (!identifier || !password)
       return alert("Enter both username/email and password");
-    }
 
     try {
       const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // 👇 Change 'email' to 'username' if your backend expects username
         body: JSON.stringify({ email: identifier, password }),
       });
 
@@ -51,27 +44,23 @@
         localStorage.setItem("user", JSON.stringify(data.user));
         window.location.href = "/dashboard.html";
       } else {
-        alert(data.message || "Login failed. Check your credentials.");
+        alert(data.message || "Login failed");
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Server error. Try again later.");
+      alert("Server error");
     }
   });
 
-  // =============================
-  // SIGNUP FUNCTION
-  // =============================
+  // SIGNUP
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const username = document.getElementById("signupUsername").value.trim();
     const email = document.getElementById("signupEmail").value.trim();
     const password = document.getElementById("signupPassword").value.trim();
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password)
       return alert("Please fill all fields");
-    }
 
     try {
       const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
@@ -81,16 +70,15 @@
       });
 
       const data = await res.json();
-
       if (res.ok) {
-        alert("Signup successful! You can now log in.");
-        loginBtn.click(); // switch to login form
+        alert("Signup successful!");
+        loginBtn.click();
       } else {
         alert(data.message || "Signup failed");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      alert("Server error. Try again later.");
+      alert("Server error");
     }
   });
-})();
+});
