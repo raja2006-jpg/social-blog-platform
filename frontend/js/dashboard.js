@@ -1,4 +1,4 @@
-// dashboard.js
+// frontend/js/dashboard.js
 (() => {
   const feedContainer = document.getElementById("feedContainer");
   const postModal = document.getElementById("postModal");
@@ -22,12 +22,11 @@
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Redirect if not logged in
   if (!token || !user) {
     window.location.href = "/index.html";
   }
 
-  // Display user profile info
+  // Display user info
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
@@ -38,12 +37,12 @@
     window.location.href = "/index.html";
   });
 
-  // ---------------- OPEN/CLOSE POST MODAL ----------------
+  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => postModal.style.display = "flex");
   closeModalBtn.addEventListener("click", () => postModal.style.display = "none");
   window.addEventListener("click", e => { if(e.target === postModal) postModal.style.display = "none"; });
 
-  // ---------------- FETCH POSTS ----------------
+  // Fetch posts
   const fetchPosts = async () => {
     try {
       const res = await fetch(POSTS_URL, { headers: { Authorization: `Bearer ${token}` } });
@@ -56,7 +55,7 @@
     }
   };
 
-  // ---------------- RENDER POSTS ----------------
+  // Render posts
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach(post => {
@@ -78,7 +77,7 @@
       feedContainer.appendChild(postDiv);
     });
 
-    // Attach delete events
+    // Delete post
     document.querySelectorAll(".deleteBtn").forEach(btn => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -86,17 +85,17 @@
       });
     });
 
-    // Attach edit events
+    // Edit post
     document.querySelectorAll(".editBtn").forEach(btn => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
-        const newContent = prompt("Edit your post:");
+        const newContent = prompt("Edit your post:", "");
         if(newContent) await updatePost(id, newContent);
       });
     });
   };
 
-  // ---------------- CREATE POST ----------------
+  // Create post
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
     const image = postImage.value.trim();
@@ -125,7 +124,7 @@
     }
   });
 
-  // ---------------- DELETE POST ----------------
+  // Delete post function
   const deletePost = async (id) => {
     try {
       const res = await fetch(`${POSTS_URL}/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
@@ -137,7 +136,7 @@
     }
   };
 
-  // ---------------- UPDATE POST ----------------
+  // Update post function
   const updatePost = async (id, content) => {
     try {
       const res = await fetch(`${POSTS_URL}/${id}`, {
@@ -153,7 +152,7 @@
     }
   };
 
-  // ---------------- EDIT PROFILE ----------------
+  // Edit Profile
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if(!newUsername) return;
@@ -175,7 +174,9 @@
     }
   });
 
+  // Auto refresh feed every 15 seconds
+  setInterval(fetchPosts, 15000);
+
   // Initial fetch
   fetchPosts();
-
 })();
