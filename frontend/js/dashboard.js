@@ -1,3 +1,4 @@
+// frontend/js/dashboard.js
 (() => {
   const feedContainer = document.getElementById("feedContainer");
   const postModal = document.getElementById("postModal");
@@ -18,43 +19,60 @@
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
+
   if (!token || !user) window.location.href = "/index.html";
 
+  // Display user info
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
+  // Logout
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/index.html";
   });
 
+  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => postModal.style.display = "flex");
   closeModalBtn.addEventListener("click", () => postModal.style.display = "none");
   window.addEventListener("click", e => { if(e.target === postModal) postModal.style.display = "none"; });
 
+  // Fetch posts from backend
   const fetchPosts = async () => {
     try {
-      const res = await fetch(POSTS_URL, { headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) throw new Error("Failed to fetch posts");
+      const res = await fetch(POSTS_URL, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if(!res.ok) throw new Error("Failed to fetch posts");
       const posts = await res.json();
       renderPosts(posts);
-    } catch (err) {
+    } catch(err) {
       console.error(err);
       feedContainer.innerHTML = "<p>Failed to load posts.</p>";
     }
   };
 
+  // Render posts
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach(post => {
-      const isOwner = post.user?._id === user.id;
+      const isOwner = post.user?._id === user.id || post.user === user.id;
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
+
+      let fileHTML = "";
+      if(post.fileUrl && post.fileType) {
+        const tag = getFileTag(post.fileType);
+        fileHTML = tag === "a" 
+          ? `<a href="${post.fileUrl}" target="_blank">View File</a>` 
+          : `<${tag} controls src="${post.fileUrl}"></${tag}>`;
+      }
+
       postDiv.innerHTML = `
-        <h4>${post.user?.username || "Unknown"}</h4>
-        <p>${post.content}</p>
-        ${post.fileUrl ? `<${getFileTag(post.fileType)} controls src="${post.fileUrl}"></${getFileTag(post.fileType)}>` : ""}
+        <h4>${post.user?.username || post.username || "Unknown"}</h4>
+        <p>${post.content || ""}</p>
+        ${fileHTML}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
         ${isOwner ? `<div class="btn-group">
           <button class="editBtn" data-id="${post._id}">Edit</button>
@@ -64,27 +82,33 @@
       feedContainer.appendChild(postDiv);
     });
 
+    // Add delete listeners
     document.querySelectorAll(".deleteBtn").forEach(btn => {
       btn.addEventListener("click", async e => {
-        if(confirm("Are you sure to delete this post?")) await deletePost(e.target.dataset.id);
+        const id = e.target.dataset.id;
+        if(confirm("Are you sure to delete this post?")) await deletePost(id);
       });
     });
 
+    // Add edit listeners
     document.querySelectorAll(".editBtn").forEach(btn => {
       btn.addEventListener("click", async e => {
+        const id = e.target.dataset.id;
         const newContent = prompt("Edit your post:", "");
-        if(newContent) await updatePost(e.target.dataset.id, newContent);
+        if(newContent) await updatePost(id, newContent);
       });
     });
   };
 
+  // Determine file tag based on MIME type
   const getFileTag = (type) => {
     if(type.startsWith("image")) return "img";
     if(type.startsWith("video")) return "video";
     if(type.startsWith("audio")) return "audio";
-    return "a";
-  }
+    return "a"; // fallback
+  };
 
+  // Submit post
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
     const file = postFile.files[0];
@@ -97,7 +121,7 @@
     try {
       const res = await fetch(POSTS_URL, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // DO NOT set Content-Type, let browser handle FormData
         body: formData
       });
       if(!res.ok) throw new Error("Failed to create post");
@@ -112,9 +136,13 @@
     }
   });
 
+  // Delete post
   const deletePost = async (id) => {
     try {
-      const res = await fetch(`${POSTS_URL}/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${POSTS_URL}/${id}`, { 
+        method: "DELETE", 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
       if(!res.ok) throw new Error("Delete failed");
       fetchPosts();
     } catch(err) {
@@ -123,11 +151,15 @@
     }
   };
 
+  // Update post
   const updatePost = async (id, content) => {
     try {
       const res = await fetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
         body: JSON.stringify({ content })
       });
       if(!res.ok) throw new Error("Update failed");
@@ -138,16 +170,22 @@
     }
   };
 
+  // Edit profile
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if(!newUsername) return;
+
     try {
       const res = await fetch(`${PROFILE_URL}/${user.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
         body: JSON.stringify({ username: newUsername })
       });
       if(!res.ok) throw new Error("Profile update failed");
+
       user.username = newUsername;
       localStorage.setItem("user", JSON.stringify(user));
       profileName.innerText = newUsername;
@@ -158,6 +196,9 @@
     }
   });
 
+  // Auto-refresh feed every 15 seconds
   setInterval(fetchPosts, 15000);
+
+  // Initial fetch
   fetchPosts();
 })();

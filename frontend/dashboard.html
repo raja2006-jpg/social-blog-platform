@@ -15,6 +15,7 @@
     button { cursor: pointer; border: none; border-radius: 5px; padding: 6px 12px; transition: 0.2s; }
     button:hover { opacity: 0.85; }
 
+    /* Navbar */
     nav {
       display: flex;
       justify-content: space-between;
@@ -30,6 +31,7 @@
     nav .nav-links a { margin-left: 20px; font-weight: bold; }
     nav .nav-links a:hover { text-decoration: underline; }
 
+    /* Feed container */
     #feedContainer {
       max-width: 600px;
       margin: 20px auto;
@@ -51,6 +53,7 @@
     .editBtn { background: orange; color: white; }
     .deleteBtn { background: crimson; color: white; }
 
+    /* Floating + Button */
     #openModalBtn {
       position: fixed;
       bottom: 70px;
@@ -68,6 +71,7 @@
       z-index: 100;
     }
 
+    /* Post Modal */
     #postModal {
       display: none;
       position: fixed;
@@ -88,8 +92,10 @@
       gap: 10px;
     }
     #postModal textarea, #postModal input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1em; }
+    #postModal video, #postModal audio { max-width: 100%; margin-top: 5px; }
     #closeModalBtn { background: #ccc; align-self: flex-end; padding: 4px 8px; }
 
+    /* Profile Section */
     .profile {
       position: fixed;
       bottom: 0;
@@ -108,6 +114,7 @@
 </head>
 <body>
 
+  <!-- Navbar -->
   <nav>
     <div class="logo">SocialBlog</div>
     <div class="nav-links">
@@ -116,19 +123,23 @@
     </div>
   </nav>
 
+  <!-- Feed -->
   <div id="feedContainer"></div>
 
+  <!-- Floating + Button -->
   <div id="openModalBtn">+</div>
 
+  <!-- Post Modal -->
   <div id="postModal">
     <div class="modal-content">
       <button id="closeModalBtn">X</button>
       <textarea id="postContent" placeholder="What's on your mind?"></textarea>
-      <input type="file" id="postFile" accept="image/*,video/*,audio/*" capture>
+      <input type="file" id="postFile" accept="image/*,video/*,audio/*">
       <button id="submitPost">Post</button>
     </div>
   </div>
 
+  <!-- Profile Section -->
   <div class="profile">
     <div style="display:flex; align-items:center;">
       <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture">
