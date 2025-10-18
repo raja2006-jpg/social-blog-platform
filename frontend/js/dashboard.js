@@ -21,22 +21,17 @@
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!token || !user) {
-    window.location.href = "/index.html";
-  }
+  if (!token || !user) window.location.href = "/index.html";
 
-  // Show profile
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
-  // Logout
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/index.html";
   });
 
-  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => postModal.style.display = "flex");
   closeModalBtn.addEventListener("click", () => postModal.style.display = "none");
   window.addEventListener("click", e => { if(e.target === postModal) postModal.style.display = "none"; });
@@ -75,7 +70,6 @@
       feedContainer.appendChild(postDiv);
     });
 
-    // Delete
     document.querySelectorAll(".deleteBtn").forEach(btn => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -83,7 +77,6 @@
       });
     });
 
-    // Edit
     document.querySelectorAll(".editBtn").forEach(btn => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -93,20 +86,26 @@
     });
   };
 
-  // Create post
+  // Create post with files
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
-    const image = postImage.value.trim();
-    const video = postVideo.value.trim();
-    const audio = postAudio.value.trim();
+    const imageFile = postImage.files[0];
+    const videoFile = postVideo.files[0];
+    const audioFile = postAudio.files[0];
 
-    if(!content && !image && !video && !audio) return alert("Post cannot be empty");
+    if(!content && !imageFile && !videoFile && !audioFile) return alert("Post cannot be empty");
+
+    const formData = new FormData();
+    formData.append("content", content);
+    if(imageFile) formData.append("image", imageFile);
+    if(videoFile) formData.append("video", videoFile);
+    if(audioFile) formData.append("audio", audioFile);
 
     try {
       const res = await fetch(POSTS_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ content, image, video, audio })
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
       });
       if(!res.ok) throw new Error("Failed to create post");
 
@@ -122,7 +121,6 @@
     }
   });
 
-  // Delete post
   const deletePost = async (id) => {
     try {
       const res = await fetch(`${POSTS_URL}/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
@@ -134,7 +132,6 @@
     }
   };
 
-  // Update post
   const updatePost = async (id, content) => {
     try {
       const res = await fetch(`${POSTS_URL}/${id}`, {
@@ -150,7 +147,6 @@
     }
   };
 
-  // Edit profile
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if(!newUsername) return;
@@ -171,7 +167,6 @@
     }
   });
 
-  // Auto refresh feed
   setInterval(fetchPosts, 15000);
   fetchPosts();
 })();

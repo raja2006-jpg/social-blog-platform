@@ -12,9 +12,7 @@
       background: #f0f2f5;
       color: #333;
     }
-
     a { text-decoration: none; color: inherit; }
-
     button {
       cursor: pointer;
       border: none;
@@ -22,7 +20,6 @@
       padding: 6px 12px;
       transition: 0.2s;
     }
-
     button:hover { opacity: 0.85; }
 
     /* ===== Navbar ===== */
@@ -37,7 +34,6 @@
       top: 0;
       z-index: 1000;
     }
-
     nav .logo { font-weight: bold; font-size: 1.5em; }
     nav .nav-links a { margin-left: 20px; font-weight: bold; }
     nav .nav-links a:hover { text-decoration: underline; }
@@ -50,7 +46,6 @@
       flex-direction: column;
       gap: 20px;
     }
-
     .post {
       background: white;
       border-radius: 10px;
@@ -61,19 +56,11 @@
       gap: 8px;
       transition: 0.2s;
     }
-
     .post:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-    .post img, .post video, .post audio {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 5px;
-    }
-
+    .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
     .post h4 { margin: 0; font-size: 1em; font-weight: bold; }
     .post p { margin: 0; }
     .post small { color: #777; }
-
     .btn-group { margin-top: 8px; display: flex; gap: 8px; }
     .editBtn { background: orange; color: white; }
     .deleteBtn { background: crimson; color: white; }
@@ -106,7 +93,6 @@
       align-items: center;
       z-index: 1000;
     }
-
     #postModal .modal-content {
       background: white;
       padding: 20px;
@@ -117,7 +103,6 @@
       flex-direction: column;
       gap: 10px;
     }
-
     #postModal textarea, #postModal input {
       width: 100%;
       padding: 10px;
@@ -125,12 +110,7 @@
       border: 1px solid #ccc;
       font-size: 1em;
     }
-
-    #closeModalBtn {
-      background: #ccc;
-      align-self: flex-end;
-      padding: 4px 8px;
-    }
+    #closeModalBtn { background: #ccc; align-self: flex-end; padding: 4px 8px; }
 
     /* ===== Profile Section ===== */
     .profile {
@@ -144,20 +124,16 @@
       padding: 10px 20px;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     }
-
     .profile img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       object-fit: cover;
     }
-
     .profile span { font-weight: bold; margin-left: 10px; }
-
     .profile button { background: #4267B2; color: white; }
   </style>
 </head>
-
 <body>
 
   <!-- Navbar -->
@@ -180,9 +156,9 @@
     <div class="modal-content">
       <button id="closeModalBtn">X</button>
       <textarea id="postContent" placeholder="What's on your mind?"></textarea>
-      <input type="text" id="postImage" placeholder="Image URL (optional)">
-      <input type="text" id="postVideo" placeholder="Video URL (optional)">
-      <input type="text" id="postAudio" placeholder="Audio URL (optional)">
+      <input type="file" id="postImage" accept="image/*" capture="environment">
+      <input type="file" id="postVideo" accept="video/*" capture>
+      <input type="file" id="postAudio" accept="audio/*" capture>
       <button id="submitPost">Post</button>
     </div>
   </div>
