@@ -1,82 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | Social Blog</title>
-  <!-- Cache-busting -->
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard | SocialBlog</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #333; color: white; }
-    nav .logo { font-size: 1.5em; font-weight: bold; }
-    nav .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
-    nav .nav-links a:hover { text-decoration: underline; }
-    .welcome-msg { text-align: center; margin: 20px; font-size: 1.2em; font-weight: bold; }
-    .new-post { background: white; margin: 20px auto; padding: 15px; max-width: 600px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .new-post textarea, .new-post input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; resize: vertical; font-size: 1em; }
-    .new-post button { padding: 10px 20px; border: none; background: #007bff; color: white; font-size: 1em; border-radius: 5px; cursor: pointer; }
-    .new-post button:hover { background: #0056b3; }
-    .feed { max-width: 600px; margin: 20px auto; }
-    .post { background: white; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    .post img { max-width: 100%; margin-top: 10px; border-radius: 5px; }
-    .post button { margin-right: 10px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
-    .post .editBtn { background: orange; color: white; }
-    .post .deleteBtn { background: crimson; color: white; }
+    /* Minimal card styling for the feed (add to your style.css if you prefer) */
+    :root {
+      --accent: #0095f6;
+      --muted: #6b7280;
+      --card-bg: #fff;
+      --radius: 12px;
+      --shadow: 0 6px 18px rgba(15,23,42,0.06);
+    }
+    body { font-family: Arial, Helvetica, sans-serif; background: #f3f4f6; margin:0; color:#111827; }
+    nav { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; background:#111827; color:white; }
+    nav .brand {font-weight:700; font-size:1.1rem}
+    nav .userbox {display:flex; align-items:center; gap:12px}
+    nav .userbox img {width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.08)}
+    main { max-width:1000px; margin:18px auto; padding:0 16px; display:grid; grid-template-columns: 1fr 360px; gap:20px; }
+    .right { position:relative }
+    .welcome-card { background:var(--card-bg); padding:14px; border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:16px; display:flex; gap:12px; align-items:center; }
+    .profile-avatar { width:56px; height:56px; border-radius:50%; object-fit:cover }
+    .post-creator { font-weight:700 }
+    .post-form { background:var(--card-bg); padding:12px; border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:16px; }
+    .post-form textarea { width:100%; min-height:72px; border-radius:8px; border:1px solid #e6e7eb; padding:10px; resize:vertical }
+    .post-form .controls { display:flex; justify-content:space-between; margin-top:8px; gap:8px }
+    .btn { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600 }
+    .btn.primary { background:var(--accent); color:white }
+    .btn.ghost { background:transparent; border:1px solid #e6e7eb }
+    .feed { display:flex; flex-direction:column; gap:14px }
+    .post-card { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px; }
+    .post-header { display:flex; align-items:center; gap:12px }
+    .post-header .meta { font-size:0.95rem }
+    .post-content { margin-top:10px; white-space:pre-wrap }
+    .post-image { margin-top:10px; width:100%; max-height:450px; object-fit:cover; border-radius:8px }
+    .post-actions { display:flex; gap:8px; align-items:center; margin-top:10px; }
+    .like-btn { display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; font-weight:600 }
+    .like-btn.liked { color:var(--accent) }
+    .small { color:var(--muted); font-size:0.9rem }
+    .right .panel { position:sticky; top:16px; background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px }
+    .comments-list { max-height:250px; overflow:auto; margin-top:8px; display:flex; flex-direction:column; gap:8px }
+    .comment { padding:8px; border-radius:8px; background:#f8fafc }
+    .admin-badge { background:goldenrod; color:#111; padding:2px 8px; border-radius:999px; font-weight:700; font-size:0.75rem }
+    /* small screens */
+    @media (max-width:900px) {
+      main { grid-template-columns: 1fr; padding-bottom:40px }
+      .right { order:2 }
+      .left { order:1 }
+    }
+
+    /* modal */
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000 }
+    .modal { background:white; border-radius:12px; padding:16px; width:90%; max-width:640px; box-shadow:0 12px 40px rgba(2,6,23,0.4) }
+    .modal h3 { margin:0 0 8px 0 }
+    .close-x { float:right; cursor:pointer; font-weight:700 }
   </style>
 </head>
-
 <body>
-  <!-- Navbar -->
   <nav>
-    <div class="logo">SocialBlog</div>
-    <div class="nav-links">
-      <a href="profile.html">Profile</a>
-      <a href="#" id="logoutBtn">Logout</a>
+    <div class="brand">SocialBlog</div>
+    <div class="userbox">
+      <div id="adminControls" style="display:none">
+        <button id="manageUsersBtn" class="btn ghost">Manage Users</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px">
+        <img id="navAvatar" src="assets/default-avatar.png" alt="avatar"/>
+        <div style="text-align:right">
+          <div id="navUsername">—</div>
+          <div class="small" id="navEmail">—</div>
+        </div>
+        <button id="logoutBtn" class="btn ghost">Logout</button>
+      </div>
     </div>
   </nav>
 
-  <!-- Welcome message -->
-  <div class="welcome-msg" id="welcomeMessage"></div>
+  <main>
+    <section class="left">
+      <div class="welcome-card">
+        <img id="welcomeAvatar" src="assets/default-avatar.png" alt="avatar" class="profile-avatar"/>
+        <div>
+          <div style="font-weight:800" id="welcomeUsername">Welcome</div>
+          <div class="small" id="welcomeEmail">—</div>
+        </div>
+      </div>
 
-  <!-- New Post Form -->
-  <section class="new-post">
-    <form id="postForm">
-      <textarea name="content" placeholder="What's on your mind?" required autocomplete="off"></textarea>
-      <input type="text" name="image" placeholder="Image URL (optional)" autocomplete="off" />
-      <button type="submit">Post</button>
-    </form>
-  </section>
+      <div class="post-form" id="postFormCard">
+        <form id="postForm">
+          <textarea id="postContent" name="content" placeholder="What's on your mind?" required></textarea>
+          <input id="postImage" name="image" type="url" placeholder="Image URL (optional)" style="width:100%; margin-top:8px; padding:8px; border-radius:8px; border:1px solid #e6e7eb" />
+          <div class="controls" style="margin-top:8px;">
+            <div class="small">Share with everyone</div>
+            <div>
+              <button type="button" id="clearPostBtn" class="btn ghost">Clear</button>
+              <button type="submit" id="submitPostBtn" class="btn primary">Post</button>
+            </div>
+          </div>
+        </form>
+      </div>
 
-  <!-- Posts Feed -->
-  <section class="feed" id="feedContainer"></section>
+      <div class="feed" id="feedContainer" aria-live="polite"></div>
+    </section>
 
-  <!-- JS Scripts -->
-  <script src="js/posts.js" defer></script>
+    <aside class="right">
+      <div class="panel">
+        <h4>Your Profile</h4>
+        <div id="profileMini">
+          <div style="display:flex; gap:10px; align-items:center">
+            <img id="miniAvatar" src="assets/default-avatar.png" alt="avatar" style="width:48px;height:48px;border-radius:50%;object-fit:cover" />
+            <div>
+              <div id="miniName" style="font-weight:700">—</div>
+              <div class="small" id="miniEmail">—</div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="margin:12px 0" />
+        <div>
+          <strong>Feed Controls</strong>
+          <div style="margin-top:8px; display:flex; gap:8px;">
+            <button id="refreshBtn" class="btn ghost">Refresh</button>
+            <button id="toggleAutoBtn" class="btn ghost">Auto: On</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Comments / Post modal placeholder (injected by JS) -->
+  <div id="modalRoot"></div>
+
   <script src="js/dashboard.js" defer></script>
-
-  <!-- Protect dashboard and logout -->
-  <script defer>
-    (function() {
-      const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user"));
-
-      // If not logged in, redirect to login
-      if (!token || !user) {
-        window.location.replace("index.html");
-        return;
-      }
-
-      // Show welcome message
-      document.getElementById("welcomeMessage").innerText = `Welcome, ${user.username}!`;
-
-      // Logout button
-      document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.replace("index.html");
-      });
-    })();
-  </script>
 </body>
 </html>
