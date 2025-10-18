@@ -8,6 +8,10 @@ const User = require("../models/User");
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
   try {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -36,13 +40,17 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     console.error("Register error:", error);
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // ------------------ LOGIN user ------------------
 router.post("/login", async (req, res) => {
-  const { identifier, password } = req.body; // Accept "identifier" from frontend
+  const { identifier, password } = req.body; // identifier = email or username
+
+  if (!identifier || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
   try {
     // Find user by email or username
@@ -50,11 +58,15 @@ router.post("/login", async (req, res) => {
       $or: [{ email: identifier }, { username: identifier }],
     });
 
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     // Create JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -69,7 +81,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

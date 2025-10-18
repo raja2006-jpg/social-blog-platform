@@ -44,17 +44,29 @@
     if (e.target === postModal) postModal.style.display = "none";
   });
 
+  // Common fetch wrapper to handle token and errors
+  const authFetch = async (url, options = {}) => {
+    try {
+      options.headers = options.headers || {};
+      options.headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(url, options);
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.message || "Server error");
+      }
+
+      return data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   // Fetch posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch(POSTS_URL, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to fetch posts");
-      }
-      const posts = await res.json();
+      const posts = await authFetch(POSTS_URL);
       renderPosts(posts);
     } catch (err) {
       console.error(err);
@@ -96,7 +108,7 @@
       feedContainer.appendChild(postDiv);
     });
 
-    // Delete button listeners
+    // Add listeners
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -104,7 +116,6 @@
       });
     });
 
-    // Edit button listeners
     document.querySelectorAll(".editBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -114,12 +125,11 @@
     });
   };
 
-  // File type mapping
   const getFileTag = (type) => {
     if (type.startsWith("image")) return "img";
     if (type.startsWith("video")) return "video";
     if (type.startsWith("audio")) return "audio";
-    return "a"; // fallback
+    return "a";
   };
 
   // Submit post
@@ -134,15 +144,7 @@
     if (file) formData.append("file", file);
 
     try {
-      const res = await fetch(POSTS_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` }, // DO NOT set Content-Type for FormData
-        body: formData,
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to create post");
-      }
+      await authFetch(POSTS_URL, { method: "POST", body: formData });
       postContent.value = "";
       postFile.value = "";
       postModal.style.display = "none";
@@ -153,17 +155,9 @@
     }
   });
 
-  // Delete post
   const deletePost = async (id) => {
     try {
-      const res = await fetch(`${POSTS_URL}/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Delete failed");
-      }
+      await authFetch(`${POSTS_URL}/${id}`, { method: "DELETE" });
       fetchPosts();
     } catch (err) {
       console.error(err);
@@ -171,21 +165,13 @@
     }
   };
 
-  // Update post
   const updatePost = async (id, content) => {
     try {
-      const res = await fetch(`${POSTS_URL}/${id}`, {
+      await authFetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Update failed");
-      }
       fetchPosts();
     } catch (err) {
       console.error(err);
@@ -199,18 +185,11 @@
     if (!newUsername) return;
 
     try {
-      const res = await fetch(`${PROFILE_URL}/${user.id}`, {
+      await authFetch(`${PROFILE_URL}/${user.id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
       });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Profile update failed");
-      }
       user.username = newUsername;
       localStorage.setItem("user", JSON.stringify(user));
       profileName.innerText = newUsername;
@@ -221,9 +200,7 @@
     }
   });
 
-  // Auto-refresh feed every 15 seconds
+  // Auto-refresh
   setInterval(fetchPosts, 15000);
-
-  // Initial fetch
   fetchPosts();
 })();
