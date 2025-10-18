@@ -5,7 +5,9 @@
   const closeModalBtn = document.getElementById("closeModalBtn");
   const submitPostBtn = document.getElementById("submitPost");
   const postContent = document.getElementById("postContent");
-  const postMedia = document.getElementById("postMedia");
+  const postImage = document.getElementById("postImage");
+  const postVideo = document.getElementById("postVideo");
+  const postAudio = document.getElementById("postAudio");
 
   const profilePic = document.getElementById("profilePic");
   const profileName = document.getElementById("profileName");
@@ -19,18 +21,22 @@
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!token || !user) window.location.href = "/index.html";
+  if (!token || !user) {
+    window.location.href = "/index.html";
+  }
 
+  // Show profile
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
+  // Logout
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/index.html";
   });
 
-  // Modal open/close
+  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => postModal.style.display = "flex");
   closeModalBtn.addEventListener("click", () => postModal.style.display = "none");
   window.addEventListener("click", e => { if(e.target === postModal) postModal.style.display = "none"; });
@@ -48,25 +54,18 @@
     }
   };
 
-  // Render posts
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach(post => {
       const isOwner = post.user?._id === user.id;
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
-
-      let mediaHTML = "";
-      if(post.mediaType && post.mediaURL){
-        if(post.mediaType.startsWith("image")) mediaHTML = `<img src="${post.mediaURL}">`;
-        else if(post.mediaType.startsWith("video")) mediaHTML = `<video controls src="${post.mediaURL}"></video>`;
-        else if(post.mediaType.startsWith("audio")) mediaHTML = `<audio controls src="${post.mediaURL}"></audio>`;
-      }
-
       postDiv.innerHTML = `
         <h4>${post.user?.username || "Unknown"}</h4>
         <p>${post.content}</p>
-        ${mediaHTML}
+        ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
+        ${post.video ? `<video controls src="${post.video}"></video>` : ""}
+        ${post.audio ? `<audio controls src="${post.audio}"></audio>` : ""}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
         ${isOwner ? `<div class="btn-group">
           <button class="editBtn" data-id="${post._id}">Edit</button>
@@ -76,39 +75,45 @@
       feedContainer.appendChild(postDiv);
     });
 
-    document.querySelectorAll(".deleteBtn").forEach(btn => btn.addEventListener("click", async e => {
-      const id = e.target.dataset.id;
-      if(confirm("Are you sure to delete this post?")) await deletePost(id);
-    }));
+    // Delete
+    document.querySelectorAll(".deleteBtn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.dataset.id;
+        if(confirm("Are you sure to delete this post?")) await deletePost(id);
+      });
+    });
 
-    document.querySelectorAll(".editBtn").forEach(btn => btn.addEventListener("click", async e => {
-      const id = e.target.dataset.id;
-      const newContent = prompt("Edit your post:", "");
-      if(newContent) await updatePost(id, newContent);
-    }));
+    // Edit
+    document.querySelectorAll(".editBtn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.dataset.id;
+        const newContent = prompt("Edit your post:", "");
+        if(newContent) await updatePost(id, newContent);
+      });
+    });
   };
 
-  // Create post with media
+  // Create post
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
-    const mediaFile = postMedia.files[0];
+    const image = postImage.value.trim();
+    const video = postVideo.value.trim();
+    const audio = postAudio.value.trim();
 
-    if(!content && !mediaFile) return alert("Post cannot be empty");
-
-    const formData = new FormData();
-    formData.append("content", content);
-    if(mediaFile) formData.append("media", mediaFile);
+    if(!content && !image && !video && !audio) return alert("Post cannot be empty");
 
     try {
       const res = await fetch(POSTS_URL, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` }, // do NOT set Content-Type manually for FormData
-        body: formData
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ content, image, video, audio })
       });
       if(!res.ok) throw new Error("Failed to create post");
 
       postContent.value = "";
-      postMedia.value = "";
+      postImage.value = "";
+      postVideo.value = "";
+      postAudio.value = "";
       postModal.style.display = "none";
       fetchPosts();
     } catch(err) {
@@ -145,11 +150,10 @@
     }
   };
 
-  // Edit Profile
+  // Edit profile
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if(!newUsername) return;
-
     try {
       const res = await fetch(`${PROFILE_URL}/${user.id}`, {
         method: "PUT",
@@ -167,10 +171,7 @@
     }
   });
 
-  // Auto-refresh feed every 15 sec
+  // Auto refresh feed
   setInterval(fetchPosts, 15000);
-
-  // Initial fetch
   fetchPosts();
-
 })();
