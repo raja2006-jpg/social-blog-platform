@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Social Blog</title>
   <style>
-    /* ===== General Styles ===== */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -13,16 +12,9 @@
       color: #333;
     }
     a { text-decoration: none; color: inherit; }
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      padding: 6px 12px;
-      transition: 0.2s;
-    }
+    button { cursor: pointer; border: none; border-radius: 5px; padding: 6px 12px; transition: 0.2s; }
     button:hover { opacity: 0.85; }
 
-    /* ===== Navbar ===== */
     nav {
       display: flex;
       justify-content: space-between;
@@ -38,7 +30,6 @@
     nav .nav-links a { margin-left: 20px; font-weight: bold; }
     nav .nav-links a:hover { text-decoration: underline; }
 
-    /* ===== Feed Container ===== */
     #feedContainer {
       max-width: 600px;
       margin: 20px auto;
@@ -54,18 +45,12 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      transition: 0.2s;
     }
-    .post:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
-    .post h4 { margin: 0; font-size: 1em; font-weight: bold; }
-    .post p { margin: 0; }
-    .post small { color: #777; }
     .btn-group { margin-top: 8px; display: flex; gap: 8px; }
     .editBtn { background: orange; color: white; }
     .deleteBtn { background: crimson; color: white; }
 
-    /* ===== Floating + Button ===== */
     #openModalBtn {
       position: fixed;
       bottom: 70px;
@@ -83,7 +68,6 @@
       z-index: 100;
     }
 
-    /* ===== Post Modal ===== */
     #postModal {
       display: none;
       position: fixed;
@@ -103,16 +87,9 @@
       flex-direction: column;
       gap: 10px;
     }
-    #postModal textarea, #postModal input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-    }
+    #postModal textarea, #postModal input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1em; }
     #closeModalBtn { background: #ccc; align-self: flex-end; padding: 4px 8px; }
 
-    /* ===== Profile Section ===== */
     .profile {
       position: fixed;
       bottom: 0;
@@ -124,19 +101,13 @@
       padding: 10px 20px;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     }
-    .profile img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+    .profile img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
     .profile span { font-weight: bold; margin-left: 10px; }
     .profile button { background: #4267B2; color: white; }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav>
     <div class="logo">SocialBlog</div>
     <div class="nav-links">
@@ -145,25 +116,19 @@
     </div>
   </nav>
 
-  <!-- Feed -->
   <div id="feedContainer"></div>
 
-  <!-- Floating + Button -->
   <div id="openModalBtn">+</div>
 
-  <!-- Post Modal -->
   <div id="postModal">
     <div class="modal-content">
       <button id="closeModalBtn">X</button>
       <textarea id="postContent" placeholder="What's on your mind?"></textarea>
-      <input type="file" id="postImage" accept="image/*" capture="environment">
-      <input type="file" id="postVideo" accept="video/*" capture>
-      <input type="file" id="postAudio" accept="audio/*" capture>
+      <input type="file" id="postFile" accept="image/*,video/*,audio/*" capture>
       <button id="submitPost">Post</button>
     </div>
   </div>
 
-  <!-- Profile Section -->
   <div class="profile">
     <div style="display:flex; align-items:center;">
       <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile Picture">

@@ -5,9 +5,7 @@
   const closeModalBtn = document.getElementById("closeModalBtn");
   const submitPostBtn = document.getElementById("submitPost");
   const postContent = document.getElementById("postContent");
-  const postImage = document.getElementById("postImage");
-  const postVideo = document.getElementById("postVideo");
-  const postAudio = document.getElementById("postAudio");
+  const postFile = document.getElementById("postFile");
 
   const profilePic = document.getElementById("profilePic");
   const profileName = document.getElementById("profileName");
@@ -20,7 +18,6 @@
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-
   if (!token || !user) window.location.href = "/index.html";
 
   profileName.innerText = user.username;
@@ -36,7 +33,6 @@
   closeModalBtn.addEventListener("click", () => postModal.style.display = "none");
   window.addEventListener("click", e => { if(e.target === postModal) postModal.style.display = "none"; });
 
-  // Fetch posts
   const fetchPosts = async () => {
     try {
       const res = await fetch(POSTS_URL, { headers: { Authorization: `Bearer ${token}` } });
@@ -58,9 +54,7 @@
       postDiv.innerHTML = `
         <h4>${post.user?.username || "Unknown"}</h4>
         <p>${post.content}</p>
-        ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
-        ${post.video ? `<video controls src="${post.video}"></video>` : ""}
-        ${post.audio ? `<audio controls src="${post.audio}"></audio>` : ""}
+        ${post.fileUrl ? `<${getFileTag(post.fileType)} controls src="${post.fileUrl}"></${getFileTag(post.fileType)}>` : ""}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
         ${isOwner ? `<div class="btn-group">
           <button class="editBtn" data-id="${post._id}">Edit</button>
@@ -71,35 +65,34 @@
     });
 
     document.querySelectorAll(".deleteBtn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.target.dataset.id;
-        if(confirm("Are you sure to delete this post?")) await deletePost(id);
+      btn.addEventListener("click", async e => {
+        if(confirm("Are you sure to delete this post?")) await deletePost(e.target.dataset.id);
       });
     });
 
     document.querySelectorAll(".editBtn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.target.dataset.id;
+      btn.addEventListener("click", async e => {
         const newContent = prompt("Edit your post:", "");
-        if(newContent) await updatePost(id, newContent);
+        if(newContent) await updatePost(e.target.dataset.id, newContent);
       });
     });
   };
 
-  // Create post with files
+  const getFileTag = (type) => {
+    if(type.startsWith("image")) return "img";
+    if(type.startsWith("video")) return "video";
+    if(type.startsWith("audio")) return "audio";
+    return "a";
+  }
+
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
-    const imageFile = postImage.files[0];
-    const videoFile = postVideo.files[0];
-    const audioFile = postAudio.files[0];
-
-    if(!content && !imageFile && !videoFile && !audioFile) return alert("Post cannot be empty");
+    const file = postFile.files[0];
+    if(!content && !file) return alert("Post cannot be empty");
 
     const formData = new FormData();
     formData.append("content", content);
-    if(imageFile) formData.append("image", imageFile);
-    if(videoFile) formData.append("video", videoFile);
-    if(audioFile) formData.append("audio", audioFile);
+    if(file) formData.append("file", file);
 
     try {
       const res = await fetch(POSTS_URL, {
@@ -110,9 +103,7 @@
       if(!res.ok) throw new Error("Failed to create post");
 
       postContent.value = "";
-      postImage.value = "";
-      postVideo.value = "";
-      postAudio.value = "";
+      postFile.value = "";
       postModal.style.display = "none";
       fetchPosts();
     } catch(err) {
