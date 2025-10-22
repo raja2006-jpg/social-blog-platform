@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');  // MongoDB connection
+const path = require("path");
 
 const app = express();
 
@@ -11,12 +12,14 @@ connectDB();
 // Parse JSON requests
 app.use(express.json());
 
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // ✅ Enable CORS for your Vercel frontend (remove trailing '/')
 app.use(cors({
-  origin: ["https://social-blog-platform-3.onrender.com", "http://localhost:3000"], // add localhost if testing locally
+  origin: ["https://social-blog-platform-3.onrender.com", "http://localhost:3000"],
   credentials: true
 }));
-
 
 // ------------------ ROUTES ------------------
 app.use('/api/auth', require('./routes/auth'));

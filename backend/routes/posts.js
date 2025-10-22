@@ -32,13 +32,12 @@ router.post("/", authMiddleware, upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "Post cannot be empty" });
 
     const newPost = new Post({
-      user: req.user.id,
+      user: req.user._id,
       username: req.user.username || "Anonymous",
       content: content || "",
     });
 
     if (file) {
-      // Use absolute URL if deployed
       const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
       newPost.fileUrl = fileUrl;
       newPost.fileType = file.mimetype;
@@ -58,8 +57,8 @@ router.get("/", authMiddleware, async (req, res) => {
     const posts = await Post.find().sort({ createdAt: -1 });
     res.status(200).json(posts);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Fetch posts error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
@@ -69,7 +68,7 @@ router.put("/:id", authMiddleware, upload.single("file"), async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    if (post.user.toString() !== req.user.id && !req.user.isAdmin)
+    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin)
       return res.status(401).json({ message: "Not authorized" });
 
     const { content } = req.body;
@@ -85,8 +84,8 @@ router.put("/:id", authMiddleware, upload.single("file"), async (req, res) => {
     await post.save();
     res.status(200).json(post);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Update post error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
@@ -96,10 +95,9 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    if (post.user.toString() !== req.user.id && !req.user.isAdmin)
+    if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin)
       return res.status(401).json({ message: "Not authorized" });
 
-    // Remove file if exists
     if (post.fileUrl) {
       const filename = post.fileUrl.split("/uploads/")[1];
       const filePath = path.join(__dirname, "../uploads", filename);
@@ -109,8 +107,8 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     await post.remove();
     res.status(200).json({ message: "Post deleted" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Delete post error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
