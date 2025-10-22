@@ -48,27 +48,24 @@
   // Common fetch wrapper to handle token and errors
   const authFetch = async (url, options = {}) => {
     try {
-      // 1. Initialize headers safely
+      // 1. Initialize and merge headers safely, ensuring Authorization is set
       options.headers = {
-        ...options.headers, // Merge existing headers
-        "Authorization": `Bearer ${token}` // Ensure Authorization is set (and potentially overrides a prior one)
+        ...options.headers,
+        "Authorization": `Bearer ${token}`
       };
+      
+      const res = await fetch(url, options); // Line 57 - Request sent
 
-      const res = await fetch(url, options);
-
-      // Attempt to parse JSON, falling back to null on failure
-      // We read the body only once, regardless of res.ok
+      // 2. Attempt to parse JSON body, but handle non-JSON responses gracefully
       let data = null;
       try {
           data = await res.json();
       } catch (e) {
-          // If JSON parsing fails (e.g., a 500 error returns a non-JSON HTML page),
-          // data remains null, and we'll check res.ok below.
+          // JSON parsing failed (e.g., 500 error returned HTML)
       }
 
       if (!res.ok) {
-        // Use the error message from the JSON data if available, otherwise a default status text.
-        // For a 500 error, data is often null or has no message, so the default is used.
+        // 3. Throw a detailed error, falling back to statusText if no message in JSON
         const errorMessage = data?.message || res.statusText || "Server error";
         throw new Error(errorMessage);
       }
@@ -85,7 +82,7 @@
       const posts = await authFetch(POSTS_URL);
       renderPosts(posts);
     } catch (err) {
-      console.error(err);
+      console.error(err); // Line 88 - Error caught and logged
       // Display the specific error message from authFetch
       feedContainer.innerHTML = `<p style="color:red;">Failed to load posts: ${err.message}</p>`;
     }
@@ -95,8 +92,7 @@
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach((post) => {
-      // Corrected: Check for user property for both object and string ID. 
-      // Assuming user.id is the current logged-in user's ID string
+      // Check for user property for both object and string ID. 
       const isOwner = (post.user && post.user._id === user.id) || (post.user === user.id); 
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
@@ -163,7 +159,7 @@
     if (file) formData.append("file", file);
 
     try {
-      // Note: Do NOT set Content-Type header for FormData, fetch handles it automatically.
+      // Do NOT set Content-Type header for FormData, fetch handles it automatically.
       await authFetch(POSTS_URL, { method: "POST", body: formData });
       postContent.value = "";
       postFile.value = "";
@@ -187,10 +183,10 @@
 
   const updatePost = async (id, content) => {
     try {
-      // Corrected: The options object needs to be constructed completely for authFetch to merge the headers correctly.
       await authFetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" }, // This content type is mandatory for JSON body.
+        // Ensure Content-Type is set here for the JSON body
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
       fetchPosts();
