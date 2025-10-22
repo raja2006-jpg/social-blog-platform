@@ -21,37 +21,36 @@
     loginBtn.classList.remove("active");
   });
 
-// LOGIN
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // ------------------- LOGIN -------------------
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const email = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+    const identifier = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
-  if (!email || !password) return alert("Enter both email and password");
+    if (!identifier || !password) return alert("All fields are required");
 
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }), // 👈 send 'email'
-    });
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok && data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "/dashboard.html";
-    } else {
-      alert(data.message || "Login failed. Check your credentials.");
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "/dashboard.html";
+      } else {
+        alert(data.message || "Login failed. Check your credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Server error. Try again later.");
     }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Server error. Try again later.");
-  }
-});
-
+  });
 
   // ------------------- SIGNUP -------------------
   signupForm.addEventListener("submit", async (e) => {
@@ -62,7 +61,7 @@ loginForm.addEventListener("submit", async (e) => {
     const password = document.getElementById("signupPassword").value.trim();
 
     if (!username || !email || !password) {
-      return alert("Please fill all fields");
+      return alert("All fields are required");
     }
 
     try {
