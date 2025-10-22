@@ -1,3 +1,4 @@
+// frontend/js/dashboard.js
 (() => {
   const feedContainer = document.getElementById("feedContainer");
   const postModal = document.getElementById("postModal");
@@ -47,14 +48,29 @@
   // Common fetch wrapper to handle token and errors
   const authFetch = async (url, options = {}) => {
     try {
-      options.headers = options.headers || {};
-      options.headers["Authorization"] = `Bearer ${token}`;
+      // 1. Initialize headers safely
+      options.headers = {
+        ...options.headers, // Merge existing headers
+        "Authorization": `Bearer ${token}` // Ensure Authorization is set (and potentially overrides a prior one)
+      };
+
       const res = await fetch(url, options);
 
-      const data = await res.json().catch(() => null);
+      // Attempt to parse JSON, falling back to null on failure
+      // We read the body only once, regardless of res.ok
+      let data = null;
+      try {
+          data = await res.json();
+      } catch (e) {
+          // If JSON parsing fails (e.g., a 500 error returns a non-JSON HTML page),
+          // data remains null, and we'll check res.ok below.
+      }
 
       if (!res.ok) {
-        throw new Error(data?.message || "Server error");
+        // Use the error message from the JSON data if available, otherwise a default status text.
+        // For a 500 error, data is often null or has no message, so the default is used.
+        const errorMessage = data?.message || res.statusText || "Server error";
+        throw new Error(errorMessage);
       }
 
       return data;
@@ -70,6 +86,7 @@
       renderPosts(posts);
     } catch (err) {
       console.error(err);
+      // Display the specific error message from authFetch
       feedContainer.innerHTML = `<p style="color:red;">Failed to load posts: ${err.message}</p>`;
     }
   };
@@ -78,7 +95,9 @@
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach((post) => {
-      const isOwner = post.user?._id === user.id || post.user === user.id;
+      // Corrected: Check for user property for both object and string ID. 
+      // Assuming user.id is the current logged-in user's ID string
+      const isOwner = (post.user && post.user._id === user.id) || (post.user === user.id); 
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
 
@@ -144,6 +163,7 @@
     if (file) formData.append("file", file);
 
     try {
+      // Note: Do NOT set Content-Type header for FormData, fetch handles it automatically.
       await authFetch(POSTS_URL, { method: "POST", body: formData });
       postContent.value = "";
       postFile.value = "";
@@ -167,9 +187,10 @@
 
   const updatePost = async (id, content) => {
     try {
+      // Corrected: The options object needs to be constructed completely for authFetch to merge the headers correctly.
       await authFetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }, // This content type is mandatory for JSON body.
         body: JSON.stringify({ content }),
       });
       fetchPosts();
@@ -190,6 +211,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
       });
+      
+      // Update local storage and UI only after successful API call
       user.username = newUsername;
       localStorage.setItem("user", JSON.stringify(user));
       profileName.innerText = newUsername;
