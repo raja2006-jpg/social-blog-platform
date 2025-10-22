@@ -10,7 +10,6 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, "../uploads");
-    // Ensure uploads folder exists
     if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
     cb(null, uploadDir);
   },
@@ -29,6 +28,9 @@ router.post("/", authMiddleware, upload.single("file"), async (req, res) => {
     const { content } = req.body;
     const file = req.file;
 
+    if (!content && !file)
+      return res.status(400).json({ message: "Post cannot be empty" });
+
     const newPost = new Post({
       user: req.user.id,
       username: req.user.username || "Anonymous",
@@ -36,15 +38,17 @@ router.post("/", authMiddleware, upload.single("file"), async (req, res) => {
     });
 
     if (file) {
-      newPost.fileUrl = `/uploads/${file.filename}`; // saved path for frontend
-      newPost.fileType = file.mimetype;              // can check type on frontend
+      // Use absolute URL if deployed
+      const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+      newPost.fileUrl = fileUrl;
+      newPost.fileType = file.mimetype;
     }
 
     await newPost.save();
     res.status(201).json(newPost);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to create post" });
+    console.error("Create post error:", err);
+    res.status(500).json({ message: "Failed to create post", error: err.message });
   }
 });
 
@@ -73,7 +77,8 @@ router.put("/:id", authMiddleware, upload.single("file"), async (req, res) => {
 
     if (content) post.content = content;
     if (file) {
-      post.fileUrl = `/uploads/${file.filename}`;
+      const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+      post.fileUrl = fileUrl;
       post.fileType = file.mimetype;
     }
 
@@ -94,9 +99,10 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     if (post.user.toString() !== req.user.id && !req.user.isAdmin)
       return res.status(401).json({ message: "Not authorized" });
 
-    // Optionally remove file from uploads folder
+    // Remove file if exists
     if (post.fileUrl) {
-      const filePath = path.join(__dirname, "..", post.fileUrl);
+      const filename = post.fileUrl.split("/uploads/")[1];
+      const filePath = path.join(__dirname, "../uploads", filename);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     }
 

@@ -1,4 +1,3 @@
-// frontend/js/dashboard.js
 (() => {
   const feedContainer = document.getElementById("feedContainer");
   const postModal = document.getElementById("postModal");
@@ -17,93 +16,75 @@
   const POSTS_URL = `${BACKEND_URL}/api/posts`;
   const PROFILE_URL = `${BACKEND_URL}/api/users`;
 
-  // Get user info and token
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Redirect if not logged in
   if (!token || !user) {
     alert("You must log in first!");
     window.location.href = "/index.html";
   }
 
-  // Display user info
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
-  // Logout
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/index.html";
   });
 
-  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => (postModal.style.display = "flex"));
   closeModalBtn.addEventListener("click", () => (postModal.style.display = "none"));
   window.addEventListener("click", (e) => {
     if (e.target === postModal) postModal.style.display = "none";
   });
 
-  // Common fetch wrapper to handle token and errors
+  // ---------------- AUTH FETCH ----------------
   const authFetch = async (url, options = {}) => {
     try {
-      // 1. Initialize and merge headers safely, ensuring Authorization is set
-      options.headers = {
-        ...options.headers,
-        "Authorization": `Bearer ${token}`
-      };
-      
-      const res = await fetch(url, options); // Line 57 - Request sent
-
-      // 2. Attempt to parse JSON body, but handle non-JSON responses gracefully
-      let data = null;
-      try {
-          data = await res.json();
-      } catch (e) {
-          // JSON parsing failed (e.g., 500 error returned HTML)
+      options.headers = options.headers || {};
+      if (!(options.body instanceof FormData)) {
+        options.headers["Content-Type"] = options.headers["Content-Type"] || "application/json";
       }
+      options.headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(url, options);
+
+      let data = null;
+      try { data = await res.json(); } catch (e) {}
 
       if (!res.ok) {
-        // 3. Throw a detailed error, falling back to statusText if no message in JSON
-        const errorMessage = data?.message || res.statusText || "Server error";
-        throw new Error(errorMessage);
+        throw new Error(data?.message || res.statusText || "Server error");
       }
-
       return data;
     } catch (err) {
       throw err;
     }
   };
 
-  // Fetch posts
+  // ---------------- POSTS ----------------
   const fetchPosts = async () => {
     try {
       const posts = await authFetch(POSTS_URL);
       renderPosts(posts);
     } catch (err) {
-      console.error(err); // Line 88 - Error caught and logged
-      // Display the specific error message from authFetch
       feedContainer.innerHTML = `<p style="color:red;">Failed to load posts: ${err.message}</p>`;
+      console.error(err);
     }
   };
 
-  // Render posts
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach((post) => {
-      // Check for user property for both object and string ID. 
-      const isOwner = (post.user && post.user._id === user.id) || (post.user === user.id); 
+      const isOwner = (post.user?._id === user.id) || (post.user === user.id);
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
 
       let fileHTML = "";
       if (post.fileUrl && post.fileType) {
         const tag = getFileTag(post.fileType);
-        fileHTML =
-          tag === "a"
-            ? `<a href="${post.fileUrl}" target="_blank">View File</a>`
-            : `<${tag} controls src="${post.fileUrl}"></${tag}>`;
+        fileHTML = tag === "a"
+          ? `<a href="${post.fileUrl}" target="_blank">View File</a>`
+          : `<${tag} controls src="${post.fileUrl}"></${tag}>`;
       }
 
       postDiv.innerHTML = `
@@ -111,33 +92,28 @@
         <p>${post.content || ""}</p>
         ${fileHTML}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
-        ${
-          isOwner
-            ? `<div class="btn-group">
-                <button class="editBtn" data-id="${post._id}">Edit</button>
-                <button class="deleteBtn" data-id="${post._id}">Delete</button>
-              </div>`
-            : ""
-        }
+        ${isOwner ? `<div class="btn-group">
+          <button class="editBtn" data-id="${post._id}">Edit</button>
+          <button class="deleteBtn" data-id="${post._id}">Delete</button>
+        </div>` : ""}
       `;
       feedContainer.appendChild(postDiv);
     });
 
-    // Add listeners
-    document.querySelectorAll(".deleteBtn").forEach((btn) => {
+    document.querySelectorAll(".deleteBtn").forEach(btn =>
       btn.addEventListener("click", async (e) => {
-        const id = e.target.dataset.id;
-        if (confirm("Are you sure you want to delete this post?")) await deletePost(id);
-      });
-    });
+        if (confirm("Are you sure you want to delete this post?")) {
+          await deletePost(e.target.dataset.id);
+        }
+      })
+    );
 
-    document.querySelectorAll(".editBtn").forEach((btn) => {
+    document.querySelectorAll(".editBtn").forEach(btn =>
       btn.addEventListener("click", async (e) => {
-        const id = e.target.dataset.id;
         const newContent = prompt("Edit your post:", "");
-        if (newContent) await updatePost(id, newContent);
-      });
-    });
+        if (newContent) await updatePost(e.target.dataset.id, newContent);
+      })
+    );
   };
 
   const getFileTag = (type) => {
@@ -147,7 +123,6 @@
     return "a";
   };
 
-  // Submit post
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
     const file = postFile.files[0];
@@ -159,7 +134,6 @@
     if (file) formData.append("file", file);
 
     try {
-      // Do NOT set Content-Type header for FormData, fetch handles it automatically.
       await authFetch(POSTS_URL, { method: "POST", body: formData });
       postContent.value = "";
       postFile.value = "";
@@ -185,7 +159,6 @@
     try {
       await authFetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        // Ensure Content-Type is set here for the JSON body
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
@@ -196,7 +169,7 @@
     }
   };
 
-  // Edit profile
+  // ---------------- PROFILE ----------------
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if (!newUsername) return;
@@ -207,8 +180,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
       });
-      
-      // Update local storage and UI only after successful API call
+
       user.username = newUsername;
       localStorage.setItem("user", JSON.stringify(user));
       profileName.innerText = newUsername;
@@ -219,7 +191,6 @@
     }
   });
 
-  // Auto-refresh
   setInterval(fetchPosts, 15000);
   fetchPosts();
 })();
