@@ -48,8 +48,6 @@
   // Common fetch wrapper to handle token and errors
   const authFetch = async (url, options = {}) => {
     try {
-      // FIX: Only apply the Authorization header in the wrapper. 
-      // Other headers (like Content-Type) must be passed explicitly in options if needed.
       options.headers = options.headers || {};
       options.headers["Authorization"] = `Bearer ${token}`; 
 
@@ -57,14 +55,10 @@
 
       let data = null;
       try {
-          // Attempt to read the response body as JSON
           data = await res.json();
-      } catch (e) {
-          // Ignore JSON parsing errors, especially common on 500 status with non-JSON body
-      }
+      } catch (e) {}
 
       if (!res.ok) {
-        // Use the error message from the JSON data if available, or the status text
         const errorMessage = data?.message || res.statusText || "Server error";
         throw new Error(errorMessage);
       }
@@ -90,7 +84,10 @@
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
     posts.reverse().forEach((post) => {
-      const isOwner = (post.user && post.user._id === user.id) || (post.user === user.id);
+      const isOwner = post.user && (post.user._id?.toString() === user.id || post.user.toString() === user.id);
+      const isAdmin = user.isAdmin;
+      const showButtons = isOwner || isAdmin;
+
       const postDiv = document.createElement("div");
       postDiv.classList.add("post");
 
@@ -109,7 +106,7 @@
         ${fileHTML}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
         ${
-          isOwner
+          showButtons
             ? `<div class="btn-group">
                 <button class="editBtn" data-id="${post._id}">Edit</button>
                 <button class="deleteBtn" data-id="${post._id}">Delete</button>
@@ -156,7 +153,6 @@
     if (file) formData.append("file", file);
 
     try {
-      // Do NOT set Content-Type header for FormData!
       await authFetch(POSTS_URL, { method: "POST", body: formData });
       postContent.value = "";
       postFile.value = "";
@@ -182,8 +178,7 @@
     try {
       await authFetch(`${POSTS_URL}/${id}`, {
         method: "PUT",
-        // Content-Type is set explicitly here for JSON body
-        headers: { "Content-Type": "application/json" }, 
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
       fetchPosts();
@@ -201,7 +196,6 @@
     try {
       await authFetch(`${PROFILE_URL}/${user.id}`, {
         method: "PUT",
-        // Content-Type is set explicitly here for JSON body
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
       });
