@@ -4,10 +4,169 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Social Blog - Login / Signup</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="" />
   <style>
-    .hidden { display: none; }
-    .active { background-color: #1451a6; color: white; }
+   
+    /* === Import Font === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* === Reset === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* === Background Image & Layout === */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("https://img.freepik.com/premium-photo/dark-purple-theme-trees-purple-sun_839169-17891.jpg") no-repeat center center/cover;
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft overlay for better readability */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 0;
+}
+
+/* === Container === */
+.container {
+  position: relative;
+  z-index: 1;
+  width: 380px;
+  background: rgba(8, 8, 8, 0.15);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 0 25px rgba(25, 4, 38, 0.844);
+  transition: all 0.4s ease;
+}
+
+.container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 40px rgba(137, 9, 149, 0.4);
+}
+
+/* === Form Title === */
+.form-box h2 {
+  text-align: center;
+  color: #c6b0d4;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* === Toggle Buttons === */
+.button-box {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #c6b0d4;
+  border-radius: 50px;
+  padding: 5px;
+  margin-bottom: 25px;
+}
+
+.toggle-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e9e9ea;
+  font-size: 1rem;
+  padding: 10px 0;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: all 0.4s ease;
+}
+
+.toggle-btn.active {
+  background: transparent rgb(153, 71, 204);
+  border: 1px solid #c6b0d4;
+  color: #dadee7;
+  font-weight: 600;
+}
+
+/* === Input Fields === */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: transparent;
+  border: 1px solid rgba(228, 219, 219, 0.4); 
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: #c8ccd2;
+}
+
+.input-field:focus {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+/* === Submit Button === */
+.submit-btn {
+  background: transparent;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  border: 10px solid rgba(228, 219, 219, 0.4);
+  
+  color: #e2dada;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #e4c1ff36;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1.5px);
+}
+
+/* === Hidden (for signup form switch) === */
+.hidden {
+  display: none;
+}
+
+/* === Responsive === */
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 30px 20px;
+  }
+  .form-box h2 {
+    font-size: 1.6rem;
+  }
+}
+
   </style>
   <link rel="icon" href="https://st.depositphotos.com/1000765/1256/i/450/depositphotos_12562615-stock-photo-3d-small-looking-through-binoculars.jpg" type="image/x-icon" />
 </head>
