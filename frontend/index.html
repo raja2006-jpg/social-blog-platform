@@ -226,30 +226,8 @@ body::before::after {
       </form>
     </div>
   </div>
-
-  <script>
-    const loginBtn = document.getElementById('loginBtn');
-    const signupBtn = document.getElementById('signupBtn');
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const body = document.body;
-
-    loginBtn.addEventListener('click', () => {
-      loginBtn.classList.add('active');
-      signupBtn.classList.remove('active');
-      loginForm.classList.remove('hidden');
-      signupForm.classList.add('hidden');
-      body.classList.remove('signup-bg');
-    });
-
-    signupBtn.addEventListener('click', () => {
-      signupBtn.classList.add('active');
-      loginBtn.classList.remove('active');
-      signupForm.classList.remove('hidden');
-      loginForm.classList.add('hidden');
-      body.classList.add('signup-bg');
-    });
-  </script>
+   <script src="js/auth.js" defer></script>
 </body>
 </html>
+
 
