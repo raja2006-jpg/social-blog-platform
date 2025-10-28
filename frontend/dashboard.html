@@ -25,16 +25,16 @@
       align-items: center;
       padding: 12px 20px;
       background-color: #270b30;
-      background: transparent #270b30;
+      background: transparent #2e2d2f00;
       backdrop-filter: blur(15px);
-      color: rgb(214, 201, 224);
+      color: rgb(250, 250, 250);
       position: sticky;
       top: 0;
       z-index: 1000;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     nav .logo { font-weight: bold; font-size: 1.6em; letter-spacing: 1px; }
-    nav .nav-links a { margin-left: 20px; font-weight: bold; color: rgb(210, 197, 219); }
+    nav .nav-links a { margin-left: 20px; font-weight: bold; color: rgb(252, 248, 255); }
     nav .nav-links a:hover { text-decoration: underline; }
 
     /* ===== Feed ===== */
@@ -90,7 +90,7 @@
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background:rgba(69, 7, 105, 0.474);
+      background:transparent;
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -110,7 +110,20 @@
       animation: fadeIn 0.25s ease-in-out;
 
     }
-     
+
+      #closeModalBtn {
+        background-color: #270b30;
+        color: white;
+        font-weight: bold;
+        border-radius: 50%;
+      }
+      #submitPost {
+        background-color: #270b30;
+        color: white;
+        font-weight: bold;
+        border-radius: 35%;
+      }
+
     @keyframes fadeIn {
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
@@ -131,7 +144,7 @@
       position: fixed;
       bottom: 0;
       left: 0; right:0;
-      background:#270b30;
+      background:#b9a7c36f;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -143,14 +156,6 @@
     .profile span { font-weight: bold; margin-left: 12px; font-size: 1em; }
     .profile button { background: #3d144b; color: rgb(158, 153, 158); padding: 6px 14px; font-weight: bold; border-radius: 30px; }
     .profile button:hover { opacity: 0.85; }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 650px) {
-      #feedContainer { margin: 80px 10px 120px 10px; }
-      nav .logo { font-size: 1.4em; }
-      #openModalBtn { bottom: 120px; width: 55px; height: 55px; font-size: 24px; }
-      .profile { flex-direction: column; gap: 10px; align-items: flex-start; }
-    }
   </style>
 </head>
 <body>
@@ -161,7 +166,7 @@
     <div class="nav-links">
       <a href="#">Home</a>
       <a href="#" id="logoutBtn">Logout</a>
-      <a href="contact.html">Contact</a>
+      <a href="#" id="profileBtn">Contact</a>
     </div>
   </nav>
 
@@ -175,10 +180,10 @@
   <!-- Post Modal -->
   <div id="postModal">
     <div class="modal-content">
-      <button id="closeModalBtn" style="color: #270b30;">X</button>
+      <button id="closeModalBtn">X</button>
       <textarea id="postContent" placeholder="What's on your mind?" rows="4"></textarea>
       <input type="file" id="postFile" accept="image/*,video/*,audio/*">
-      <button id="submitPost" style="color: #270b30;">Post</button>
+      <button id="submitPost">Post</button>
     </div>
   </div>
 
@@ -190,6 +195,7 @@
     </div>
     <div>
       <button id="editProfileBtn">Edit Profile</button>
+      <button id="deleteAccountBtn"></button>
     </div>
   </div>
 
