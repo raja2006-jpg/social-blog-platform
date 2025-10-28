@@ -43,14 +43,14 @@ body::after {
 
 /* Default (Login) Background */
 body::before {
-  background-image: url("https://www.pixelstalk.net/wp-content/uploads/2016/08/Free-black-background-wallpaper.jpg'");
+  background-image: url("https://i.pinimg.com/736x/05/cc/2b/05cc2b98bec34cc5419f7c4ee2b8d4a9.jpg");
   opacity: 1;
 }
 
 
 /* Sign Up Background */
 body::after {
-  background-image: url("https://www.pixelstalk.net/wp-content/uploads/2016/08/Free-black-background-wallpaper.jpg");
+  background-image: url("https://i.pinimg.com/736x/0d/57/9a/0d579a8feda53cd2b5711b4caa453bde.jpg");
   opacity: 0;
 }
 
@@ -69,8 +69,8 @@ body::after {
   background-blend-mode: overlay;
 }
 body::before::after {
-  background-color: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
 }
 
 /* === Container === */
@@ -78,7 +78,7 @@ body::before::after {
   position: relative;
   z-index: 1;
   width: 380px;
-  background: rgba(8, 8, 8, 0.15);
+  background:transparent;
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
@@ -95,7 +95,7 @@ body::before::after {
 /* === Form Title === */
 .form-box h2 {
   text-align: center;
-  color: #efeaf2;
+  color: #061b01;
   font-size: 2rem;
   margin-bottom: 20px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -107,7 +107,7 @@ body::before::after {
   justify-content: center;
   background: transparent;
   backdrop-filter: blur(10px);
-  border: 1px solid #b7abbe;
+  border: 1px solid #08030a;
   border-radius: 50px;
   padding: 5px;
   margin-bottom: 25px;
@@ -117,7 +117,7 @@ body::before::after {
   flex: 1;
   background: transparent;
   border: none;
-  color: #f3f3f9;
+  color: #fcfcff;
   font-size: 1rem;
   padding: 10px 0;
   cursor: pointer;
@@ -127,8 +127,8 @@ body::before::after {
 
 .toggle-btn.active {
   background: rgba(22, 19, 23, 0.3);
-  border: 1px solid #c6b0d4;
-  color: #ffffff;
+  border: 1px solid #8e8a8000;
+  color: #fbfbfb;
   font-weight: 600;
 }
 
@@ -137,28 +137,30 @@ body::before::after {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  border: #050202;
+
 }
 
 .input-field {
   width: 100%;
   padding: 12px 15px;
   border-radius: 8px;
-  border: 1px solid rgba(228, 219, 219, 0.4);
+  border: 1px solid rgba(20, 16, 16, 0.4);
   background: transparent;
   backdrop-filter: blur(50px);
-  color: #f6eeee;
+  color: #000000;
   font-size: 0.95rem;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;;
 }
 
 .input-field::placeholder {
-  color: #d9d3dbd6;
+  color: #252127d6;
 }
 
 .input-field:focus {
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(8, 7, 7, 0.5);
+  box-shadow: 0 0 10px rgba(34, 30, 30, 0.4);
 }
 
 /* === Submit Button === */
@@ -167,7 +169,7 @@ body::before::after {
   backdrop-filter: blur(50px);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
   border: 1px solid #98879d;
-  color: #eae4e4;
+  color: #050202;
   padding: 12px;
   border-radius: 25px;
   cursor: pointer;
@@ -177,7 +179,7 @@ body::before::after {
 }
 
 .submit-btn:hover {
-  background: rgba(228, 193, 255, 0.05);
+  background: rgba(85, 55, 30, 0.403);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
   transform: translateY(-1.5px);
 }
@@ -226,8 +228,30 @@ body::before::after {
       </form>
     </div>
   </div>
+
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const body = document.body;
+
+    loginBtn.addEventListener('click', () => {
+      loginBtn.classList.add('active');
+      signupBtn.classList.remove('active');
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      body.classList.remove('signup-bg');
+    });
+
+    signupBtn.addEventListener('click', () => {
+      signupBtn.classList.add('active');
+      loginBtn.classList.remove('active');
+      signupForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      body.classList.add('signup-bg');
+    });
+  </script>
    <script src="js/auth.js" defer></script>
 </body>
 </html>
-
-
