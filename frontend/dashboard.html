@@ -6,17 +6,58 @@
   <title>Dashboard | Social Blog</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #6200ee;
+      --primary-light: #8438ff;
+      --primary-dark: #3700b3;
+      --secondary-color: #03dac6;
+      --secondary-dark: #018786;
+      --background-color: #121212;
+      --surface-color: rgba(255, 255, 255, 0.05);
+      --error-color: #cf6679;
+      --success-color: #00c853;
+      --text-primary: rgba(255, 255, 255, 0.87);
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      --gradient-surface: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.08));
+    }
+
     /* ===== General Styles ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Roboto', sans-serif;
-      background: #0000005c;
-      color: #3b3b3b;
+      background: var(--background-color);
+      color: var(--text-light);
       min-height: 100vh;
+      line-height: 1.6;
     }
     a { text-decoration: none; color: inherit; }
-    button { cursor: pointer; border: none; border-radius: 6px; padding: 8px 14px; transition: 0.2s; font-weight: 500; }
-    button:hover { opacity: 0.85; }
+    button {
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      transition: var(--transition);
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+    button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    button:active::after {
+      transform: translate(-50%, -50%) scale(2);
+    }
 
     /* ===== Navbar ===== */
     nav {
@@ -24,9 +65,8 @@
       justify-content: space-between;
       align-items: center;
       padding: 12px 20px;
-      background-color: #270b30;
-      background: transparent #2e2d2f00;
-      backdrop-filter: blur(15px);
+      background: var(--gradient-surface);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       color: rgb(250, 250, 250);
       position: sticky;
       top: 0;
@@ -34,8 +74,26 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     nav .logo { font-weight: bold; font-size: 1.6em; letter-spacing: 1px; }
-    nav .nav-links a { margin-left: 20px; font-weight: bold; color: rgb(252, 248, 255); }
-    nav .nav-links a:hover { text-decoration: underline; }
+    nav .nav-links a {
+      margin-left: 20px;
+      font-weight: bold;
+      color: rgb(252, 248, 255);
+      position: relative;
+      padding: 5px 0;
+    }
+    nav .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--text-light);
+      transition: var(--transition);
+    }
+    nav .nav-links a:hover::after {
+      width: 100%;
+    }
 
     /* ===== Feed ===== */
     #feedContainer {
@@ -47,7 +105,9 @@
       padding-bottom: 100px;
     }
     .post {
-      background: rgba(164, 161, 165, 0);
+      background: var(--gradient-surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       padding: 15px;
@@ -57,20 +117,21 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .post:hover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.12));
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     }
     .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
     .btn-group { display: flex; gap: 8px; margin-top: 8px; }
-    .editBtn { background: #855703; color: white; }
-    .deleteBtn { background: rgb(100, 18, 34); color: white; }
+    .editBtn { background: var(--secondary-color); color: var(--background-color); }
+    .deleteBtn { background: var(--error-color); color: var(--text-primary); }
 
     /* ===== Floating + Button ===== */
     #openModalBtn {
       position: fixed;
       bottom: 100px;
       right: 30px;
-      background: #270b30;
+      background: var(--gradient-primary);
       color: rgb(246, 246, 246);
       font-size: 28px;
       width: 60px;
@@ -79,7 +140,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 5px 5px 12px rgba(108, 108, 108, 0.04);
+      box-shadow: var(--shadow-md);
       z-index: 100;
       transition: transform 0.2s;
     }
@@ -97,7 +158,8 @@
       padding: 10px;
     }
     #postModal .modal-content {
-      background: transparent #0e0d0d11;
+      background: rgba(18, 18, 18, 0.95);
+      border: 1px solid var(--primary-color);
       backdrop-filter: blur(20px);
       padding: 20px;
       border-radius: 14px;
@@ -128,14 +190,22 @@
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-    #postModal textarea, #postModal input { 
-      width: 100%; 
-      padding: 12px; 
-      border-radius: 6px; 
-      border: 1px solid #ffffff; 
-      font-size: 1em; 
+    #postModal textarea, #postModal input {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-light);
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ffffff;
+      font-size: 1em;
       resize: vertical;
-      background: transparent;
+      transition: var(--transition);
+    }
+    #postModal textarea:focus,
+    #postModal input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(39, 11, 48, 0.3);
     }
     #closeModalBtn { background: #ccc; align-self: flex-end; padding: 6px 10px; }
 
@@ -151,10 +221,29 @@
       padding: 12px 20px;
       box-shadow: 0 -2px 10px rgb(255, 255, 255);
       z-index: 1000;
+      background: var(--gradient-surface);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
     }
-    .profile img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #ffffff; }
+    .profile img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffffff;
+      transition: var(--transition);
+    }
+    .profile img:hover {
+      transform: scale(1.05);
+    }
     .profile span { font-weight: bold; margin-left: 12px; font-size: 1em; }
-    .profile button { background: #3d144b; color: rgb(158, 153, 158); padding: 6px 14px; font-weight: bold; border-radius: 30px; }
+    .profile button {
+      background: var(--primary-color);
+      color: var(--text-primary);
+      padding: 6px 14px;
+      font-weight: bold;
+      border-radius: 30px;
+    }
     .profile button:hover { opacity: 0.85; }
     #postContent {
     color: rgb(248, 249, 250);
@@ -166,6 +255,50 @@
     background-color: #3d144b;
     border-radius: 50px;
     padding: 6px 14px;
+    }
+
+    /* Loading Animation */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .loading {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0.05) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Feedback Indicators */
+    .success-feedback {
+      color: var(--success-color);
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+
+    .error-feedback {
+      color: var(--error-color);
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+
+    /* Enhanced Button Styles */
+    #submitPost, #closeModalBtn {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+      width: auto;
+    }
+
+    #postFile {
+      background: var(--primary-color);
+      padding: 10px;
+      border-radius: var(--radius-sm);
     }
   </style>
 </head>
@@ -212,4 +345,3 @@
   <script src="js/dashboard.js" defer></script>
 </body>
 </html>
-
