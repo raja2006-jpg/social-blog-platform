@@ -16,13 +16,16 @@
       --surface-color: rgba(255, 255, 255, 0.05);
       --error-color: #cf6679;
       --success-color: #00c853;
-      --text-primary: rgba(255, 255, 255, 0.87);
-      --text-secondary: rgba(255, 255, 255, 0.6);
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.7);
       --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
       --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
       --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
       --gradient-surface: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.08));
+      --card-hover-transform: translateY(-4px);
+      --post-metadata-color: rgba(255, 255, 255, 0.6);
+      --interaction-color: var(--secondary-color);
     }
 
     /* ===== General Styles ===== */
@@ -30,7 +33,7 @@
     body {
       font-family: 'Roboto', sans-serif;
       background: var(--background-color);
-      color: var(--text-light);
+      color: var(--text-primary);
       min-height: 100vh;
       line-height: 1.6;
     }
@@ -115,6 +118,33 @@
       flex-direction: column;
       gap: 10px;
       transition: transform 0.2s, box-shadow 0.2s;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .post::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .post:hover::before {
+      transform: scaleX(1);
+    }
+    .post-metadata {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--post-metadata-color);
+      font-size: 0.9em;
+    }
+    .post-metadata i {
+      font-size: 1.1em;
     }
     .post:hover {
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.12));
@@ -123,8 +153,24 @@
     }
     .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
     .btn-group { display: flex; gap: 8px; margin-top: 8px; }
-    .editBtn { background: var(--secondary-color); color: var(--background-color); }
+    .editBtn { background: var(--secondary-color); color: var(--text-primary); }
     .deleteBtn { background: var(--error-color); color: var(--text-primary); }
+
+    /* ===== Interaction Buttons ===== */
+    .interaction-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    .interaction-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--interaction-color);
+    }
 
     /* ===== Floating + Button ===== */
     #openModalBtn {
@@ -170,7 +216,17 @@
       gap: 12px;
       box-shadow: 0 6px 24px rgb(253, 253, 253);
       animation: fadeIn 0.25s ease-in-out;
-
+      position: relative;
+      overflow: hidden;
+    }
+    #postModal .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
     }
 
       #closeModalBtn {
@@ -192,7 +248,7 @@
     }
     #postModal textarea, #postModal input {
       background: rgba(255, 255, 255, 0.05);
-      color: var(--text-light);
+      color: var(--text-primary);
       width: 100%;
       padding: 12px;
       border-radius: 6px;
@@ -224,6 +280,11 @@
       background: var(--gradient-surface);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
+      transform: translateY(100%);
+      animation: slideUp 0.3s forwards;
+    }
+    @keyframes slideUp {
+      to { transform: translateY(0); }
     }
     .profile img {
       width: 50px;
@@ -236,7 +297,7 @@
     .profile img:hover {
       transform: scale(1.05);
     }
-    .profile span { font-weight: bold; margin-left: 12px; font-size: 1em; }
+    .profile span { font-weight: bold; margin-left: 12px; font-size: 1em; color: var(--text-primary); }
     .profile button {
       background: var(--primary-color);
       color: var(--text-primary);
@@ -245,16 +306,45 @@
       border-radius: 30px;
     }
     .profile button:hover { opacity: 0.85; }
-    #postContent {
-    color: rgb(248, 249, 250);
-    font: bold 1em 'Roboto', sans-serif;
+    #postContent, 
+    #postFile,
+    .post textarea,
+    .post input {
+      color: var(--text-primary);
     }
-    #postfile{
-    color: rgb(248, 249, 250);
-    font: bold 1em 'Roboto', sans-serif;
-    background-color: #3d144b;
-    border-radius: 50px;
-    padding: 6px 14px;
+
+    #postModal textarea::placeholder,
+    #postModal input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .profile span {
+      color: var(--text-primary);
+    }
+
+    .post-content {
+      color: var(--text-primary);
+    }
+
+    /* Remove conflicting color definitions */
+    #postContent {
+      /* Remove the existing color definition */
+      font: bold 1em 'Roboto', sans-serif;
+    }
+
+    #postcontent {
+      /* Update to use variable */
+      color: var(--text-primary);
+      font: bold 1em 'Roboto', sans-serif;
+    }
+
+    /* Fix button text colors */
+    #submitPost, 
+    #closeModalBtn,
+    .profile button,
+    .editBtn,
+    .deleteBtn {
+      color: var(--text-primary);
     }
 
     /* Loading Animation */
@@ -300,6 +390,30 @@
       padding: 10px;
       border-radius: var(--radius-sm);
     }
+    #postcontent{
+      color: var(--text-primary);
+      font: bold 1em 'Roboto', sans-serif;
+    }
+
+    /* Tooltip Styles */
+    [data-tooltip] {
+      position: relative;
+    }
+
+    [data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border-radius: 4px;
+      font-size: 0.8em;
+      white-space: nowrap;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -338,9 +452,34 @@
     </div>
     <div>
       <button id="editProfileBtn">Edit Profile</button>
-      <button id="deleteAccountBtn"></button>
     </div>
   </div>
+
+  <!-- Update Post Template Structure -->
+  <template id="postTemplate" style="display: none;">
+    <div class="post">
+      <div class="post-metadata">
+        <img class="author-avatar" width="32" height="32">
+        <span class="author-name"></span>
+        <span class="post-date"></span>
+      </div>
+      <div class="post-content"></div>
+      <div class="media-container"></div>
+      <div class="interaction-buttons">
+        <button class="interaction-btn" data-tooltip="Like">
+          <i class="far fa-heart"></i>
+          <span>0</span>
+        </button>
+        <button class="interaction-btn" data-tooltip="Comment">
+          <i class="far fa-comment"></i>
+          <span>0</span>
+        </button>
+        <button class="interaction-btn" data-tooltip="Share">
+          <i class="far fa-share-square"></i>
+        </button>
+      </div>
+    </div>
+  </template>
 
   <script src="js/dashboard.js" defer></script>
 </body>
