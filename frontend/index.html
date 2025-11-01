@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Blog - Login / Signup</title>
-  <link rel="icon" href="image.png" type="image/x-icon" />
+  <title> Let's Blog </title>
+  <link rel="icon" href="https://static.vecteezy.com/system/resources/previews/017/628/637/large_2x/letter-r-logo-golden-luxurious-symbol-monogram-design-free-vector.jpg" type="image/x-icon" />
   <style>
 /* === Import Font === */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -43,14 +43,14 @@ body::after {
 
 /* Default (Login) Background */
 body::before {
-  background-image: url("https://i.pinimg.com/736x/05/cc/2b/05cc2b98bec34cc5419f7c4ee2b8d4a9.jpg");
+  background-image: url("https://i.pinimg.com/736x/9e/0d/3f/9e0d3fab092b5c90f89dc75bd9ade815.jpg");
   opacity: 1;
 }
 
 
 /* Sign Up Background */
 body::after {
-  background-image: url("https://i.pinimg.com/736x/0d/57/9a/0d579a8feda53cd2b5711b4caa453bde.jpg");
+  background-image: url("https://i.pinimg.com/736x/80/06/f4/8006f44c6767d37a9d79032061088576.jpg");
   opacity: 0;
 }
 
@@ -70,7 +70,8 @@ body::after {
 }
 body::before::after {
   background-color: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(0px);
+  
+  
 }
 
 /* === Container === */
@@ -95,7 +96,7 @@ body::before::after {
 /* === Form Title === */
 .form-box h2 {
   text-align: center;
-  color: #061b01;
+  color: #000000ce;
   font-size: 2rem;
   margin-bottom: 20px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -145,17 +146,18 @@ body::before::after {
   width: 100%;
   padding: 12px 15px;
   border-radius: 8px;
-  border: 1px solid rgba(20, 16, 16, 0.4);
+  border: 1px solid rgba(20, 16, 16, 0.963);
   background: transparent;
   backdrop-filter: blur(50px);
-  color: #000000;
+  color: #080808;
+  text-shadow: 0 0 10px rgb(249, 244, 244);
   font-size: 0.95rem;
   outline: none;
-  transition: all 0.3s ease;;
+  transition: all 0.3s ease;
 }
 
 .input-field::placeholder {
-  color: #252127d6;
+  color: #000000;
 }
 
 .input-field:focus {
@@ -169,7 +171,7 @@ body::before::after {
   backdrop-filter: blur(50px);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
   border: 1px solid #98879d;
-  color: #050202;
+  color: #fffefe;
   padding: 12px;
   border-radius: 25px;
   cursor: pointer;
@@ -205,18 +207,18 @@ body::before::after {
 <body>
   <div class="container">
     <div class="form-box">
-      <h2>Let's Blog</h2>
+      <h2 style="color: #fdfcff; text-shadow: 0px 0px 10px rgb(9, 8, 4)">Let's Blog</h2>
 
       <div class="button-box">
-        <button id="loginBtn" class="toggle-btn active">Log In</button>
-        <button id="signupBtn" class="toggle-btn">Sign Up</button>
+        <button id="loginBtn" class="toggle-btn active" style="text-shadow: #000000;">Log In</button>
+        <button id="signupBtn" class="toggle-btn" style="text-shadow: #000000;">Sign Up</button>
       </div>
 
       <!-- Login Form -->
       <form id="loginForm" class="input-group">
         <input type="text" id="loginUsername" placeholder="Email or Username" class="input-field" required autocomplete="off" />
         <input type="password" id="loginPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
-        <button type="submit" class="submit-btn">Log In</button>
+        <button type="submit" class="submit-btn" style="text-shadow: #08030a;">Log In</button>
       </form>
 
       <!-- Signup Form -->
@@ -224,12 +226,11 @@ body::before::after {
         <input type="text" id="signupUsername" placeholder="Username" class="input-field" required autocomplete="off" />
         <input type="email" id="signupEmail" placeholder="Email" class="input-field" required autocomplete="off" />
         <input type="password" id="signupPassword" placeholder="Enter Password" class="input-field" required autocomplete="off" />
-        <button type="submit" class="submit-btn">Sign Up</button>
+        <button type="submit" class="submit-btn" style="text-shadow: #000000;">Sign Up</button>
       </form>
     </div>
   </div>
-
-  <script>
+   <script>
     const loginBtn = document.getElementById('loginBtn');
     const signupBtn = document.getElementById('signupBtn');
     const loginForm = document.getElementById('loginForm');
