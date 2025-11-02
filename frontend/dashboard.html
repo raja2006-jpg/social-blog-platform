@@ -209,8 +209,8 @@
       padding: 10px;
     }
     #postModal .modal-content {
-      background: rgba(18, 18, 18, 0.229);
-      filter: blur(30px);
+      background: rgba(18, 18, 18, 0.95);
+      border: 1px solid var(--primary-color);
       backdrop-filter: blur(20px);
       padding: 20px;
       border-radius: 14px;
@@ -219,7 +219,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 6px 20px rgb(253, 253, 253);
+      box-shadow: 0 6px 24px rgb(253, 253, 253);
       animation: fadeIn 0.25s ease-in-out;
       position: relative;
       overflow: hidden;
@@ -345,8 +345,10 @@
 
     /* Fix button text colors */
     #submitPost, 
+    #closeModalBtn,
     .profile button,
-    .editBtn {
+    .editBtn,
+    .deleteBtn {
       color: var(--text-primary);
     }
 
@@ -377,6 +379,15 @@
       color: var(--error-color);
       font-size: 0.9em;
       margin-top: 5px;
+    }
+
+    /* Enhanced Button Styles */
+    #submitPost, #closeModalBtn {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+      width: auto;
     }
 
     #postFile {
@@ -430,7 +441,9 @@
    #editProfileBtn{
     animation: alternate-reverse infinite 3s ease-in-out glow;
     text-shadow: 0 0 8px var(--primary-color);
-  
+    position:;
+   }
+
    }
 
 
@@ -507,4 +520,3 @@
   <script src="js/dashboard.js" defer></script>
 </body>
 </html>
-
