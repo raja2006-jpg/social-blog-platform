@@ -49,13 +49,13 @@
   const authFetch = async (url, options = {}) => {
     try {
       options.headers = options.headers || {};
-      options.headers["Authorization"] = `Bearer ${token}`; 
+      options.headers["Authorization"] = `Bearer ${token}`;
 
       const res = await fetch(url, options);
 
       let data = null;
       try {
-          data = await res.json();
+        data = await res.json();
       } catch (e) {}
 
       if (!res.ok) {
@@ -102,22 +102,33 @@
 
       postDiv.innerHTML = `
         <h4>${post.user?.username || post.username || "Unknown"}</h4>
-        <p>${post.content || ""}</p>
+        <p>${truncateText(post.content || "", 120)}</p>
         ${fileHTML}
         <small>${new Date(post.createdAt).toLocaleString()}</small>
-        ${
-          showButtons
-            ? `<div class="btn-group">
+        <div class="btn-group">
+          <button class="viewPostBtn" data-id="${post._id}">View Full Post</button>
+          ${
+            showButtons
+              ? `
                 <button class="editBtn" data-id="${post._id}">Edit</button>
                 <button class="deleteBtn" data-id="${post._id}">Delete</button>
-              </div>`
-            : ""
-        }
+              `
+              : ""
+          }
+        </div>
       `;
       feedContainer.appendChild(postDiv);
     });
 
-    // Add listeners
+    // View full post
+    document.querySelectorAll(".viewPostBtn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.dataset.id;
+        viewFullPost(id);
+      });
+    });
+
+    // Delete post
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -125,6 +136,7 @@
       });
     });
 
+    // Edit post
     document.querySelectorAll(".editBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
@@ -139,6 +151,74 @@
     if (type.startsWith("video")) return "video";
     if (type.startsWith("audio")) return "audio";
     return "a";
+  };
+
+  // Helper: truncate text for preview
+  const truncateText = (text, limit) => {
+    if (text.length <= limit) return text;
+    return text.substring(0, limit) + "...";
+  };
+
+  // View full post function (simple popup modal)
+  const viewFullPost = async (id) => {
+    try {
+      const post = await authFetch(`${POSTS_URL}/${id}`);
+      const modal = document.createElement("div");
+      modal.style.position = "fixed";
+      modal.style.top = "0";
+      modal.style.left = "0";
+      modal.style.width = "100%";
+      modal.style.height = "100%";
+      modal.style.background = "rgba(0,0,0,0.8)";
+      modal.style.display = "flex";
+      modal.style.alignItems = "center";
+      modal.style.justifyContent = "center";
+      modal.style.zIndex = "2000";
+
+      const box = document.createElement("div");
+      box.style.background = "#1e1e1e";
+      box.style.padding = "20px";
+      box.style.borderRadius = "10px";
+      box.style.maxWidth = "600px";
+      box.style.color = "white";
+      box.style.overflowY = "auto";
+      box.style.maxHeight = "90vh";
+
+      let mediaHTML = "";
+      if (post.fileUrl && post.fileType) {
+        const tag = getFileTag(post.fileType);
+        mediaHTML =
+          tag === "a"
+            ? `<a href="${post.fileUrl}" target="_blank">View Attachment</a>`
+            : `<${tag} controls src="${post.fileUrl}" style="width:100%; border-radius:8px;"></${tag}>`;
+      }
+
+      box.innerHTML = `
+        <h2>${post.user?.username || "Unknown"}</h2>
+        <p>${post.content}</p>
+        ${mediaHTML}
+        <small>${new Date(post.createdAt).toLocaleString()}</small>
+        <br><br>
+        <button id="closeFullPost" style="
+          background-color:#6200ee;
+          color:white;
+          border:none;
+          padding:8px 14px;
+          border-radius:5px;
+          cursor:pointer;
+        ">Close</button>
+      `;
+
+      modal.appendChild(box);
+      document.body.appendChild(modal);
+
+      document.getElementById("closeFullPost").addEventListener("click", () => {
+        modal.remove();
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load post details.");
+    }
   };
 
   // Submit post
