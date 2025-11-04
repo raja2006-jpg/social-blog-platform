@@ -36,13 +36,15 @@
       color: var(--text-primary);
       min-height: 100vh;
       line-height: 1.6;
+      
 }
 body {
   
   background-image:
-    linear-gradient(to right, rgba(250, 240, 244, 0.1) 1px, transparent 0px),
-    linear-gradient(to bottom, rgba(250, 240, 244, 0.1) 1px, transparent 0px);
-  background-size: 80px 80px;
+    linear-gradient(to right, rgba(154, 142, 147, 0.111) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(154, 142, 147, 0.111) 1px, transparent 1px);
+  background-size: 25px 25px;
+
 }
 
 
@@ -77,20 +79,18 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 20px;
-      background:white;
+      padding: 15px 20px;
+      
       background-color:transparent;
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(237, 232, 232, 0.463);
-      box-shadow: white 0px 2px 6px rgba(132, 123, 123, 0.418);
-      backdrop-filter: blur(20px);
-      color: rgb(250, 250, 250);
+      backdrop-filter: blur(29px);
+      box-shadow: 1px 1.5px 4px rgba(125, 118, 118, 0.234);
+      color: rgb(223, 221, 221);
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: 0 2px 6px rgba(132, 123, 123, 0.418);
-      border-radius: 50px;
-      margin: 18px;
+      border-radius: 15px;
+      margin-left: 120px;
+      margin-right: 120px;
       
      
     }
@@ -435,22 +435,16 @@ body {
     }
     #logoutBtn{
       &:hover{
-        color: var(--primary-color);     
+        color: rgb(184, 179, 237);
       }
-      animation: alternate-reverse infinite 3s ease-in-out glow;
-        text-shadow: 0 0 8px var(--primary-color);
     }
     #homeBtn{
       &:hover{
-        color: var(--primary-color);
+        color: rgb(184, 179, 237);
       }
-       animation: alternate-reverse infinite 3s ease-in-out glow;
-        text-shadow: 0 0 8px var(--primary-color);
+       
     }
-   #name{
-    animation: alternate-reverse infinite 1s ease-in-out glow;
-    text-shadow: 0 0 12px var(--primary-color);
-   }
+    
    #editProfileBtn{
     animation: alternate-reverse infinite 1s ease-in-out glow;
     text-shadow: 0 0 23px var(--primary-color);
