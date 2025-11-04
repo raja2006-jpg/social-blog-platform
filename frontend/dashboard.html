@@ -174,9 +174,25 @@ body {
       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     }
     .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
-    .btn-group { display: flex; gap: 8px; margin-top: 8px; }
-    .editBtn { background: var(--secondary-color); color: var(--text-primary); }
-    .deleteBtn { background: var(--error-color); color: var(--text-primary); }
+    .btn-group { 
+       display: flex;
+       gap: 8px;
+       margin-top: 8px;
+       }
+    .editBtn {
+       background: transparent;
+       filter:blur(40px);
+       color: var(--text-primary);
+       border-radius: 35px;
+       border-color:solid 1px white;
+      }
+    .deleteBtn { 
+      background:transparent;
+      filter: blur(40px);
+      border-radius:35px;
+      border-color: solid 1px white;
+      color: var(--text-primary); 
+      }
 
     /* ===== Interaction Buttons ===== */
     .interaction-btn {
