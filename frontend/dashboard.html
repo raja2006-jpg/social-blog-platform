@@ -11,11 +11,11 @@
       --primary-color: #6200ee;
       --primary-light: #8438ff;
       --primary-dark: #3700b3;
-      --secondary-color: #03dac6;
+      --secondary-color:#ffffff03;
       --secondary-dark: #018786;
       --background-color: #121212;
       --surface-color: rgba(255, 255, 255, 0.05);
-      --error-color: #cc324f00;
+      --error-color: #ffffff03;
       --success-color: #00c853;
       --text-primary: rgba(255, 255, 255, 0.95);
       --text-secondary: rgba(255, 255, 255, 0.7);
@@ -230,13 +230,14 @@ body {
       background: rgba(18, 18, 18, 0.95);
       backdrop-filter: blur(20px);
       padding: 20px;
+
       border-radius: 14px;
       width: 100%;
       max-width: 450px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 6px 12px rgb(253, 253, 253);
+      
       animation: fadeIn 0.25s ease-in-out;
       position: relative;
       overflow: hidden;
@@ -281,9 +282,9 @@ body {
     }
     #postModal textarea:focus,
     #postModal input:focus {
-      border-color: var(--primary-color);
+      border-color:rgba(255, 255, 255, 0.318);
       outline: none;
-      box-shadow: 0 0 0 2px rgba(39, 11, 48, 0.3);
+      
     }
     #closeModalBtn { background: #ccc; align-self: flex-end; padding: 6px 10px; }
 
@@ -440,12 +441,12 @@ body {
     }
     #logoutBtn{
       &:hover{
-        color: rgb(184, 179, 237);
+        color: rgb(127, 119, 220);
       }
     }
     #homeBtn{
       &:hover{
-        color: rgb(184, 179, 237);
+        color: rgb(127, 119, 220);
       }
        
     }
