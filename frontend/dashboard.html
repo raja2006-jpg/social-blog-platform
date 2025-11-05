@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,7 @@
       --secondary-dark: #018786;
       --background-color: #121212;
       --surface-color: rgba(255, 255, 255, 0.05);
-      --error-color: #cf6679;
+      --error-color: #cc324f00;
       --success-color: #00c853;
       --text-primary: rgba(255, 255, 255, 0.95);
       --text-secondary: rgba(255, 255, 255, 0.7);
@@ -43,8 +44,8 @@ body {
 
   
   background-image:
-    linear-gradient(to right, rgba(154, 142, 147, 0.111) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(154, 142, 147, 0.111) 1px, transparent 1px);
+    linear-gradient(to right, rgba(154, 142, 147, 0.085) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(154, 142, 147, 0.085) 1px, transparent 1px);
     background-size: 45px 45px;
     
    
@@ -82,19 +83,19 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 7px 19px;
+      padding: 12px 23px;
       background-color:transparent;
-      backdrop-filter: blur(25px);
+      backdrop-filter: blur(18px);
       box-shadow: 1px 1.5px 4px rgba(103, 105, 105, 0.374);
-      color: rgb(220, 212, 219);
+      color: rgb(214, 206, 213);
       position: sticky;
       background-color: #ededf21b;
       top: 0;
       z-index: 1000;
       border-radius: 18px;
       
-      margin-left: 35px;
-      margin-right: 35px;
+      margin-left: 40px;
+      margin-right: 40px;
       
      
     }
@@ -174,25 +175,9 @@ body {
       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     }
     .post img, .post video, .post audio { max-width: 100%; border-radius: 8px; margin-top: 5px; }
-    .btn-group { 
-       display: flex;
-       gap: 8px;
-       margin-top: 8px;
-       }
-    .editBtn {
-       background: transparent;
-       filter:blur(40px);
-       color: var(--text-primary);
-       border-radius: 35px;
-       border-color:solid 1px white;
-      }
-    .deleteBtn { 
-      background:transparent;
-      filter: blur(40px);
-      border-radius:35px;
-      border-color: solid 1px white;
-      color: var(--text-primary); 
-      }
+    .btn-group { display: flex; gap: 8px; margin-top: 8px; }
+    .editBtn { background: var(--secondary-color); color: var(--text-primary); border-radius: 22px; }
+    .deleteBtn { background: var(--error-color); color: var(--text-primary); border-radius: 22px;}
 
     /* ===== Interaction Buttons ===== */
     .interaction-btn {
