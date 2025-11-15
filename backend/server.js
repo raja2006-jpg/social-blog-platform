@@ -1,37 +1,40 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');  // MongoDB connection
+const connectDB = require('./config/db');
 const path = require("path");
 
 const app = express();
 
-// ------------------ CONNECT TO MONGODB ------------------
+// Connect to DB
 connectDB();
 
-// ------------------ MIDDLEWARES ------------------
-// Parse JSON requests
+// Middlewares
 app.use(express.json());
 
-// Serve uploaded files
+// Serve uploaded files correctly
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Enable CORS for your Vercel frontend (remove trailing '/')
+// FIXED CORS ORIGIN
 app.use(cors({
-  origin: ["https://social-blog-platform-3.onrender.com", "http://localhost:3000"],
+  origin: [
+    "https://social-blog-platform.onrender.com",
+    "https://social-blog-platform-3.onrender.com",
+    "http://localhost:3000"
+  ],
   credentials: true
 }));
 
-// ------------------ ROUTES ------------------
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
 
-// ------------------ TEST ROUTE ------------------
+// Test route
 app.get('/', (req, res) => {
   res.send('🚀 Backend Server is Running Successfully!');
 });
 
-// ------------------ START SERVER ------------------
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
