@@ -1,4 +1,3 @@
-// frontend/js/dashboard.js
 (() => {
   const feedContainer = document.getElementById("feedContainer");
   const postModal = document.getElementById("postModal");
@@ -15,76 +14,60 @@
 
   const BACKEND_URL = "https://social-blog-platform.onrender.com";
   const POSTS_URL = `${BACKEND_URL}/api/posts`;
-  const PROFILE_URL = `${BACKEND_URL}/api/users`;
+  const PROFILE_URL = `${BACKEND_URL}/api/users/me`;
 
-  // Get user info and token
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Redirect if not logged in
   if (!token || !user) {
     alert("You must log in first!");
     window.location.href = "/index.html";
   }
 
-  // Display user info
   profileName.innerText = user.username;
   profilePic.src = user.profilePic || "https://via.placeholder.com/40";
 
-  // Logout
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/index.html";
   });
 
-  // Open/Close Post Modal
   openModalBtn.addEventListener("click", () => (postModal.style.display = "flex"));
   closeModalBtn.addEventListener("click", () => (postModal.style.display = "none"));
   window.addEventListener("click", (e) => {
     if (e.target === postModal) postModal.style.display = "none";
   });
 
-  // Common fetch wrapper to handle token and errors
   const authFetch = async (url, options = {}) => {
-    try {
-      options.headers = options.headers || {};
-      options.headers["Authorization"] = `Bearer ${token}`; 
+    options.headers = options.headers || {};
+    options.headers["Authorization"] = `Bearer ${token}`;
 
-      const res = await fetch(url, options);
+    const res = await fetch(url, options);
 
-      let data = null;
-      try {
-          data = await res.json();
-      } catch (e) {}
+    let data = null;
+    try { data = await res.json(); } catch {}
 
-      if (!res.ok) {
-        const errorMessage = data?.message || res.statusText || "Server error";
-        throw new Error(errorMessage);
-      }
+    if (!res.ok) throw new Error(data?.message || res.statusText);
 
-      return data;
-    } catch (err) {
-      throw err;
-    }
+    return data;
   };
 
-  // Fetch posts
   const fetchPosts = async () => {
     try {
-      const posts = await authFetch(POSTS_URL);
+      const posts = await fetch(POSTS_URL).then(res => res.json());
       renderPosts(posts);
     } catch (err) {
-      console.error(err);
-      feedContainer.innerHTML = `<p style="color:red;">Failed to load posts: ${err.message}</p>`;
+      feedContainer.innerHTML =
+        `<p style="color:red;">Failed to load posts: ${err.message}</p>`;
     }
   };
 
-  // Render posts
   const renderPosts = (posts) => {
     feedContainer.innerHTML = "";
-    posts.reverse().forEach((post) => {
-      const isOwner = post.user && (post.user._id?.toString() === user.id || post.user.toString() === user.id);
+
+    posts.forEach((post) => {
+      const isOwner = post.user?._id === user.id;
       const isAdmin = user.isAdmin;
       const showButtons = isOwner || isAdmin;
 
@@ -97,14 +80,14 @@
         fileHTML =
           tag === "a"
             ? `<a href="${post.fileUrl}" target="_blank">View File</a>`
-            : `<${tag} controls src="${post.fileUrl}"></${tag}>`;
+            : `<${tag} src="${post.fileUrl}" controls></${tag}>`;
       }
 
       postDiv.innerHTML = `
-        <h4>${post.user?.username || post.username || "Unknown"}</h4>
+        <h4>${post.user?.username || "Unknown"}</h4>
         <p>${post.content || ""}</p>
         ${fileHTML}
-        <small>${new Date(post.createdAt).toLocaleString()}</small>
+        <small>${post.createdAt ? new Date(post.createdAt).toLocaleString() : ""}</small>
         ${
           showButtons
             ? `<div class="btn-group">
@@ -114,21 +97,21 @@
             : ""
         }
       `;
+
       feedContainer.appendChild(postDiv);
     });
 
-    // Add listeners
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
-        if (confirm("Are you sure you want to delete this post?")) await deletePost(id);
+        if (confirm("Are you sure?")) await deletePost(id);
       });
     });
 
     document.querySelectorAll(".editBtn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.dataset.id;
-        const newContent = prompt("Edit your post:", "");
+        const newContent = prompt("Edit your post:");
         if (newContent) await updatePost(id, newContent);
       });
     });
@@ -141,7 +124,6 @@
     return "a";
   };
 
-  // Submit post
   submitPostBtn.addEventListener("click", async () => {
     const content = postContent.value.trim();
     const file = postFile.files[0];
@@ -159,8 +141,7 @@
       postModal.style.display = "none";
       fetchPosts();
     } catch (err) {
-      console.error(err);
-      alert("Failed to create post: " + err.message);
+      alert("Failed: " + err.message);
     }
   });
 
@@ -169,8 +150,7 @@
       await authFetch(`${POSTS_URL}/${id}`, { method: "DELETE" });
       fetchPosts();
     } catch (err) {
-      console.error(err);
-      alert("Failed to delete post: " + err.message);
+      alert("Failed: " + err.message);
     }
   };
 
@@ -183,33 +163,31 @@
       });
       fetchPosts();
     } catch (err) {
-      console.error(err);
-      alert("Failed to update post: " + err.message);
+      alert("Failed: " + err.message);
     }
   };
 
-  // Edit profile
   editProfileBtn.addEventListener("click", async () => {
     const newUsername = prompt("Enter new username:", user.username);
     if (!newUsername) return;
 
     try {
-      await authFetch(`${PROFILE_URL}/${user.id}`, {
+      await authFetch(PROFILE_URL, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
       });
+
       user.username = newUsername;
       localStorage.setItem("user", JSON.stringify(user));
       profileName.innerText = newUsername;
-      alert("Profile updated successfully!");
+
+      alert("Profile updated!");
     } catch (err) {
-      console.error(err);
-      alert("Failed to update profile: " + err.message);
+      alert("Failed: " + err.message);
     }
   });
 
-  // Auto-refresh
   setInterval(fetchPosts, 15000);
   fetchPosts();
 })();
