@@ -22,12 +22,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ----------------------------------------------------------------------
-// CREATE POST  (Supports both JSON and file upload)
+// CREATE POST (requires login)
 // ----------------------------------------------------------------------
 router.post("/", authMiddleware, upload.single("file"), async (req, res) => {
   try {
     const { content } = req.body;
-    const file = req.file; // may be null
+    const file = req.file;
 
     if (!content && !file) {
       return res.status(400).json({ message: "Post cannot be empty" });
@@ -53,11 +53,14 @@ router.post("/", authMiddleware, upload.single("file"), async (req, res) => {
 });
 
 // ----------------------------------------------------------------------
-// GET ALL POSTS  (All users can see)
+// GET ALL POSTS (PUBLIC – NO LOGIN REQUIRED)
 // ----------------------------------------------------------------------
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const posts = await Post.find()
+      .populate("user", "username email")
+      .sort({ createdAt: -1 });
+
     return res.status(200).json(posts);
   } catch (err) {
     console.error("Fetch posts error:", err);
@@ -66,14 +69,13 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // ----------------------------------------------------------------------
-// UPDATE POST
+// UPDATE POST (login required)
 // ----------------------------------------------------------------------
 router.put("/:id", authMiddleware, upload.single("file"), async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    // Allow owner or admin
     if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin)
       return res.status(401).json({ message: "Not authorized" });
 
@@ -97,18 +99,16 @@ router.put("/:id", authMiddleware, upload.single("file"), async (req, res) => {
 });
 
 // ----------------------------------------------------------------------
-// DELETE POST
+// DELETE POST (login required)
 // ----------------------------------------------------------------------
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    // Owner or admin
     if (post.user.toString() !== req.user._id.toString() && !req.user.isAdmin)
       return res.status(401).json({ message: "Not authorized" });
 
-    // Delete uploaded file if exists
     if (post.fileUrl) {
       const filename = post.fileUrl.split("/uploads/")[1];
       const filePath = path.join(__dirname, "../uploads", filename);
